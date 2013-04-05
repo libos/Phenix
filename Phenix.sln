@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phenix", "Phenix\Phenix.csproj", "{818A7C18-8889-4FDF-A38D-644C370377D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhenixDeamon", "Deamon\PhenixDeamon.csproj", "{ED2D9C55-5C7E-485A-8A9A-4971C3F9192B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{818A7C18-8889-4FDF-A38D-644C370377D6}.Debug|x86.ActiveCfg = Debug|x86
+		{818A7C18-8889-4FDF-A38D-644C370377D6}.Debug|x86.Build.0 = Debug|x86
+		{818A7C18-8889-4FDF-A38D-644C370377D6}.Release|x86.ActiveCfg = Release|x86
+		{818A7C18-8889-4FDF-A38D-644C370377D6}.Release|x86.Build.0 = Release|x86
+		{ED2D9C55-5C7E-485A-8A9A-4971C3F9192B}.Debug|x86.ActiveCfg = Debug|x86
+		{ED2D9C55-5C7E-485A-8A9A-4971C3F9192B}.Debug|x86.Build.0 = Debug|x86
+		{ED2D9C55-5C7E-485A-8A9A-4971C3F9192B}.Release|x86.ActiveCfg = Release|x86
+		{ED2D9C55-5C7E-485A-8A9A-4971C3F9192B}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
