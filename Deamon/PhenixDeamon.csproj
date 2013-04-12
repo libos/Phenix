@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProcessDeamon.cs">
       <SubType>Component</SubType>

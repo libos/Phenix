@@ -11,5 +11,9 @@ namespace Phenix
         {
             return Encoding.UTF8.GetString(stringBytes);
         }
+        public static byte[] GetBytes(string str)
+        {
+            return Encoding.UTF8.GetBytes(str);
+        }
     }
 }

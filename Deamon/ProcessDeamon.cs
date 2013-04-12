@@ -180,13 +180,32 @@ namespace PhenixDeamon
             }
             else
             {
-                Process process = new Process();
-                process.StartInfo.FileName = address;
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-                process.Start();
+                //http://stackoverflow.com/questions/3798612/service-starting-a-process-wont-show-gui-c-sharp
+                ApplicationLoader.PROCESS_INFORMATION procInfo;
+                ApplicationLoader.StartProcessAndBypassUAC(address, out procInfo);
+                //Process process = new Process();
+                //process.StartInfo.FileName = address;
+                //process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                //process.Start();
+                Process process = getProcess(procInfo.dwProcessId);
+                if (process == null)
+                    SaveLog("无法启动用户进程"+address);
                 this.WatchProcess(process, address);
             }
-        } 
+        }
+        //通过WIN32API获取的ProcInfo 里的dwProcessId获取Process
+        static public Process getProcess(uint id)
+        {
+             Process[] arrayProcess = Process.GetProcesses();
+             foreach (Process p in arrayProcess)
+             {
+                 if (p.Id == id)
+                 {
+                     return p;
+                 }
+             }
+             return null;
+        }
         /// <summary>
         /// 监听进程
         /// </summary>
@@ -284,11 +303,17 @@ namespace PhenixDeamon
                     else
                     { 
                         this._process.WaitForExit();
+
                         this._process.Close();    //释放已退出进程的句柄
-                        this._process.StartInfo.FileName = this._address;
-                        this._process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                        this._process.StartInfo.UseShellExecute = false;
-                        this._process.Start();
+                        ApplicationLoader.PROCESS_INFORMATION procInfo;
+                        ApplicationLoader.StartProcessAndBypassUAC( this._address, out procInfo);
+                        this._process = ProcessDeamon.getProcess(procInfo.dwProcessId);
+                        if (this._process == null)
+                        {
+                            ProcessDeamon objProcessDeamon = new ProcessDeamon();
+                            objProcessDeamon.SaveLog("无法启动用户进程" +  this._address);
+                        }
+
                     }
                     Thread.Sleep(1000);
                 }

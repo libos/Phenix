@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Threading;
+
 using ServiceStack.Redis;
 using System.Net.Sockets;
 using System.Net;
@@ -23,127 +25,77 @@ namespace Phenix
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Thread tcplisener = null;
+        private static string param = "";
         public MainWindow()
         {
             InitializeComponent();
+            //Pipeline.TCPClient("127.0.0.1", 9999, "");
+            Pipeline pl = new Pipeline();
+            tcplisener = new Thread(new ParameterizedThreadStart(Pipeline.TCPListener));
+            pl.msgQueue += this.onRecieveCmd;
+            tcplisener.IsBackground = true;
+            tcplisener.Start("127.0.0.1:9999");
+            
+            //("127.0.0.1", 9998)
         }
-
+        private void onRecieveCmd(string sParam)
+        {
+            param = sParam;
+            Object[] list = {this,System.EventArgs.Empty };
+            statusBox.Dispatcher.BeginInvoke(new EventHandler(onCmd), list);//.Items.Add(param);
+        }
+        protected void onCmd(Object o, EventArgs e)
+        {
+            this.statusBox.Items.Add(param);
+        }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-            
-            RedisClient Redis = new RedisClient("localhost",6380);
-
-            Redis.SetEntry("hi", "hello");
-            var valueBytes = Redis.Get("hi");
-            var valueString = RedisExt.GetString(valueBytes);
-            display.Content = valueString;
-            
-            /*
-            using (var redisClient = new RedisClient())
-            {
-                //IRedisTypedClient<Shipper> redis = redisClient.GetTypedClient<Shipper>();
-            }
-            */
-        }
-
-
-        /// <summary>
-        /// 启动端口监听
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="port"></param>
-        static void TCPListener(string ip, int port)
-        {
             try
             {
-                //1.监听端口
-                TcpListener server = new TcpListener(IPAddress.Parse(ip), port);
-                server.Start();
-                Console.WriteLine("{0:HH:mm:ss}->监听端口{1}...", DateTime.Now, port);
 
-                //2.等待请求
-                while (true)
+                RedisClient Redis = new RedisClient("localhost", 6380);
+                QueueModule rm = new QueueModule();
+                rm.inQueue("FLUSHDB");
+                //Redis.SetEntry("hi", "hello");
+                //var valueBytes = Redis.Get("hi");
+                //var valueString = RedisExt.GetString(valueBytes);
+                //display.Content = valueString;
+                //statusBox.Items.Add("hi");
+                /*
+                using (var redisClient = new RedisClient())
                 {
-                    try
-                    {
-                        //2.1 收到请求
-                        TcpClient client = server.AcceptTcpClient();
-                        NetworkStream stream = client.GetStream();
-
-                        //2.2 解析数据,长度<1024字节
-                        string data = string.Empty;
-                        byte[] bytes = new byte[1024];
-                        int length = stream.Read(bytes, 0, bytes.Length);
-                        if (length > 0)
-                        {
-                            data = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
-                            Console.WriteLine("{0:HH:mm:ss}->收到数据：{1}", DateTime.Now, data);
-                        }
-
-                        //2.3 返回状态
-                        byte[] messages = System.Text.Encoding.ASCII.GetBytes("ok.");
-                        stream.Write(messages, 0, messages.Length);
-
-                        //2.4 关闭客户端
-                        stream.Close();
-                        client.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("{0:HH:mm:ss}->{1}", DateTime.Now, ex.Message);
-                    }
+                    //IRedisTypedClient<Shipper> redis = redisClient.GetTypedClient<Shipper>();
                 }
+                */
             }
-            catch (SocketException socketEx)
+            catch (ServiceStack.Redis.RedisException ex)
             {
-                //10013 The requested address is a broadcast address, but flag is not set.
-                if (socketEx.ErrorCode == 10013)
-                    Console.WriteLine("{0:HH:mm:ss}->启动失败,请检查{1}端口有无其他程序占用.", DateTime.Now, port);
-                else
-                    Console.WriteLine("{0:HH:mm:ss}->{1}", DateTime.Now, socketEx.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("{0:HH:mm:ss}->{1}", DateTime.Now, ex.Message);
+                statusBox.Items.Add("Redis服务未启动" + ex.Message);
             }
         }
 
-                /// <summary>
-        /// 发送数据
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="port"></param>
-        /// <param name="message"></param>
-        static void TCPClient(string ip, int port, string message)
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                //1.发送数据
-                byte[] messages = System.Text.Encoding.ASCII.GetBytes(message);
-                TcpClient client = new TcpClient(ip, port);
-                NetworkStream stream = client.GetStream();
-                stream.Write(messages, 0, messages.Length);
-                Console.WriteLine("{0:HH:mm:ss}->发送数据：{1}", DateTime.Now, message);
-
-                //2.接收状态,长度<1024字节
-                byte[] bytes = new Byte[1024];
-                string data = string.Empty;
-                int length = stream.Read(bytes, 0, bytes.Length);
-                if (length > 0)
-                {
-                    data = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
-                    Console.WriteLine("{0:HH:mm:ss}->接收状态：{1}", DateTime.Now, data);
-                }
-
-                //3.关闭对象
-                stream.Close();
-                client.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("{0:HH:mm:ss}->{1}", DateTime.Now, ex.Message);
-            }
+           
         }
+
+        private void startService_Click(object sender, RoutedEventArgs e)
+        {
+            statusBox.Items.Add("hihih");
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            System.Environment.Exit(0);
+        }
+
+        private void getMissionList_Click(object sender, RoutedEventArgs e)
+        {
+            Pipeline.TCPClient("127.0.0.1", 9999, "hihi");
+        }
+
+        
 
     }
 
