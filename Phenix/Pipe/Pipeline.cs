@@ -4,35 +4,67 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
+using System.Threading;
 
-namespace Phenix
+namespace Phenix.Pipe
 {
     public delegate void msgQueueEventHandler(string sParam);  
-    class Pipeline
+    public delegate void UIEventHandler(string sParam);
+    public class Pipeline
     {
-        public Pipeline()
-        {
-        }
+        private string _ip;
+        private int _port;
+        private  ManualResetEvent _event;
         private static msgQueueEventHandler OnMsgQueueEvent;
+        private static UIEventHandler OnWaitingFor;
+        public Pipeline(ManualResetEvent en)
+        {
+            _event = en;
+        }
         public event msgQueueEventHandler msgQueue
         {
             add { OnMsgQueueEvent += new msgQueueEventHandler(value); }
             remove { OnMsgQueueEvent -= new msgQueueEventHandler(value); }
-        }  
-        /// <summary>
-        /// 启动端口监听
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="port"></param>
-        public static void TCPListener(object obj)
+        }
+        public event UIEventHandler waitingHandle
         {
+            
+            add { OnWaitingFor += new UIEventHandler(value); }
+            remove { OnWaitingFor -= new UIEventHandler(value);}
+        }
+
+        public void WaitingFor(object startOrstop)
+        {
+            OnWaitingFor((string)startOrstop);
+            Thread.Sleep(1000);
+            OnWaitingFor((string)startOrstop.ToString().Substring(2,4));
+        }
+        public void WaitingForService(object startOrstop)
+        {
+            OnWaitingFor("正在停止服务...");
+            Thread aa = (Thread)startOrstop;
+            while(aa.ThreadState != ThreadState.Stopped)
+            {
+            }
+            OnWaitingFor("服务停止");
+
+        }
+
+        #region 启动端口监听
+        /// <summary>
+        /// obj "IP:Port"
+        /// </summary>
+        /// <param name="obj"></param>
+        public void TCPListener(object obj)
+        {
+          
             string[] tmp;
             tmp = obj.ToString().Split(':');
             string ip = tmp[0];
             int port = Convert.ToInt16(tmp[1]);
             try
             {
-                //1.监听端口
+                         //1.监听端口
                 TcpListener server = new TcpListener(IPAddress.Parse(ip), port);
                 server.Start();
                 //Console.Write("{0:HH:mm:ss}->监听端口{1}...", DateTime.Now, port);
@@ -42,6 +74,15 @@ namespace Phenix
                 {
                     try
                     {
+                        if (_event.WaitOne())
+                        {
+                            if (server.Pending())//判断是否有挂起的链接
+                            {
+                                server.Stop();
+                                Console.Write("{0:HH:mm:ss}->监听端口{1}...", DateTime.Now, port);
+                                server.Start();
+                            }
+                        }
                         //2.1 收到请求
                         TcpClient client = server.AcceptTcpClient();
                         NetworkStream stream = client.GetStream();
@@ -58,12 +99,13 @@ namespace Phenix
                         }
 
                         //2.3 返回状态
-                        byte[] messages = System.Text.Encoding.ASCII.GetBytes("OK");
+                        byte[] messages = System.Text.Encoding.ASCII.GetBytes("+OK");
                         stream.Write(messages, 0, messages.Length);
 
                         //2.4 关闭客户端
                         stream.Close();
                         client.Close();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -84,15 +126,21 @@ namespace Phenix
                 Console.WriteLine("{0:HH:mm:ss}->{1}", DateTime.Now, ex.Message);
             }
         }
+        #endregion
 
+
+        #region 发送命令
         /// <summary>
-        /// 发送命令
+        /// msg  "IP:Port:Message"
         /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="port"></param>
-        /// <param name="message"></param>
-        public static void TCPClient(string ip, int port, string message)
+        /// <param name="msg"></param>
+        public void TCPClient(object msg)
         {
+            string[] tmp;
+            tmp = msg.ToString().Split(':');
+            string ip = tmp[0];
+            int  port = Convert.ToInt16(tmp[1]);
+            string message = tmp[2];
             try
             {
                 //1.发送数据
@@ -105,13 +153,16 @@ namespace Phenix
                 //2.接收状态,长度<1024字节
                 byte[] bytes = new Byte[1024];
                 string data = string.Empty;
-                int length = stream.Read(bytes, 0, bytes.Length);
-                if (length > 0)
+                if (stream.DataAvailable)
                 {
-                    data = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
-                    Console.WriteLine("{0:HH:mm:ss}->接收状态：{1}", DateTime.Now, data);
+                    int length = stream.Read(bytes, 0, bytes.Length);
+                    if (length > 0)
+                    {
+                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
+                        Console.WriteLine("{0:HH:mm:ss}->接收状态：{1}", DateTime.Now, data);
+                    }
                 }
-
+                Console.Write("test1\n");
                 //3.关闭对象
                 stream.Close();
                 client.Close();
@@ -121,5 +172,6 @@ namespace Phenix
                 Console.WriteLine("{0:HH:mm:ss}->{1}", DateTime.Now, ex.Message);
             }
         }
+        #endregion
     }
 }

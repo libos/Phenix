@@ -1,0 +1,34 @@
+﻿<Window x:Class="Phenix.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="关于" Height="300" Width="412" xmlns:my="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Grid>
+        <DockPanel Height="207" HorizontalAlignment="Left" Margin="0,54,0,0" Name="dockPanel1" VerticalAlignment="Top" Width="390">
+            <GroupBox Height="Auto" Name="groupBox1" Width="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="53*" />
+                        <RowDefinition Height="34*" />
+                        <RowDefinition Height="30*" />
+                        <RowDefinition Height="83*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="99*" />
+                        <ColumnDefinition Width="279*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="卸载服务" Height="28" HorizontalAlignment="Left" Margin="221,55,0,0" Name="label2" VerticalAlignment="Top" BorderThickness="1" BorderBrush="#FF7C7373" MouseDoubleClick="label2_MouseDoubleClick" Grid.Column="1" Grid.Row="3" />
+                    <Label Content="开发者：" Height="28" HorizontalAlignment="Left" Margin="41,6,0,0" Name="label3" VerticalAlignment="Top" Grid.Row="1" />
+                    <TextBlock Margin="0,8,107,79" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
+                         <Hyperlink NavigateUri="https://me.alipay.com/liber" IsEnabled="True" Click="Hyperlink_Click">
+                            <Run Text="https://me.alipay.com/liber"/>
+                        </Hyperlink>
+                    </TextBlock>
+                    <Label Content="捐助：" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="53,3,0,0" Name="label5" VerticalAlignment="Top" Grid.RowSpan="2" />
+                    <Label Content="刘理博" Grid.Column="1" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="0,6,0,0" Name="label6" VerticalAlignment="Top" />
+                </Grid>
+            </GroupBox>
+        </DockPanel>
+        <Label Content="About" Height="54" HorizontalAlignment="Left" Name="label1" VerticalAlignment="Top" IsEnabled="True" FontSize="36" />
+        <Label Content="分布式消息队列系统" Height="28" HorizontalAlignment="Left" Margin="266,26,0,0" Name="label4" VerticalAlignment="Top" />
+    </Grid>
+</Window>

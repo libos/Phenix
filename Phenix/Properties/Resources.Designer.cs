@@ -59,5 +59,54 @@ namespace Phenix.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Icon Active {
+            get {
+                object obj = ResourceManager.GetObject("Active", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Computers {
+            get {
+                object obj = ResourceManager.GetObject("Computers", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon down {
+            get {
+                object obj = ResourceManager.GetObject("down", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Inactive {
+            get {
+                object obj = ResourceManager.GetObject("Inactive", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Phenix {
+            get {
+                object obj = ResourceManager.GetObject("Phenix", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Stop {
+            get {
+                object obj = ResourceManager.GetObject("Stop", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon up {
+            get {
+                object obj = ResourceManager.GetObject("up", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

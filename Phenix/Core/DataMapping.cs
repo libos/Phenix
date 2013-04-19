@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using ServiceStack.Redis;
 
-namespace Phenix
+namespace Phenix.Core
 {
-    class DataMapping
+    internal class DataMapping
     {
         RedisClient Redis = new RedisClient("localhost", 6380);
         public DataMapping()

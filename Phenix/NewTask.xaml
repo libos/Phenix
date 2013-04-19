@@ -1,0 +1,64 @@
+﻿<Window x:Class="Phenix.NewTask"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="新建任务" Height="590" Width="659" Name="CreateTask"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="91*" />
+            <RowDefinition Height="63*" />
+            <RowDefinition Height="359*" />
+            <RowDefinition Height="38*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="268*" />
+            <ColumnDefinition Width="369*" />
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.ColumnSpan="2" Header="基本信息" Height="Auto" HorizontalAlignment="Stretch" Margin="12,12,0,0" Name="groupBox1" VerticalAlignment="Stretch" Width="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="167*" />
+                    <ColumnDefinition Width="202*" />
+                    <ColumnDefinition Width="182*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="任务名称" Height="Auto" HorizontalAlignment="Left" Margin="5,15,0,15" Name="label1" VerticalAlignment="Center" />
+                <GridSplitter Width="8" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="1" ></GridSplitter>
+                <Label Content="启用计算机数目" Grid.Column="2" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="label2" VerticalAlignment="Center" />
+                <TextBox Grid.ColumnSpan="2" Height="23" HorizontalAlignment="Right" Margin="0,17,28,17" Name="task_name" VerticalAlignment="Center" Width="305" TextChanged="task_name_TextChanged" />
+                <TextBox Grid.Column="2" Height="Auto" HorizontalAlignment="Right" Margin="0,17,25,17" Name="task_need" VerticalAlignment="Center" Width="55" Text="1" PreviewTextInput="textBox2_PreviewTextInput" TextChanged="task_need_TextChanged" />
+                <Label Content="此处不能为空" Grid.Column="1" Height="Auto" HorizontalAlignment="Left" Margin="125,20,0,0" Name="error1" VerticalAlignment="Top" Width="Auto" Foreground="Red" Padding="0" Visibility="Hidden" />
+                <Label Content="&gt;0" Grid.Column="2" Height="28" HorizontalAlignment="Left" Margin="152,15,0,0" Name="error2" VerticalAlignment="Top" Foreground="Red" Visibility="Hidden" />
+            </Grid>
+        </GroupBox>
+        <ListBox Grid.Row="2" Height="334" HorizontalAlignment="Left" Margin="18,2,0,0" Name="stepList" VerticalAlignment="Top" Width="175" IsEnabled="False" SelectionChanged="stepList_SelectionChanged" />
+        <ComboBox Grid.Row="1" Height="29" HorizontalAlignment="Left" Margin="18,30,0,0" Name="langComb" VerticalAlignment="Top" Width="175" Padding="10,5,4,5">
+            <ComboBoxItem Content="Task's Step" IsSelected="True" />
+            <Separator></Separator>
+            <ComboBoxItem Content="Task's Logic" IsEnabled="False" />
+        </ComboBox>
+        <Button Content="添加(_A)" Grid.Row="1" Height="29" HorizontalAlignment="Left" Margin="210,30,0,0" Name="AddItem" VerticalAlignment="Top" Width="49" Click="Add_Click" />
+        <Button Grid.Row="2" Height="28" HorizontalAlignment="Right" Margin="0,20,23,0" Name="btn_up" 
+                VerticalAlignment="Top" Width="28" Padding="1"
+                Command="ComponentCommands.MoveUp" 
+                CommandParameter="{Binding SelectedItem,ElementName=stepList}">
+            <Path Fill="#FF404040" Data="F0 M 6,0 L 12,7 8,7 8,12 4,12 4,7 0,7 Z" />
+        </Button>
+        <Button Grid.Row="2" Height="28"  HorizontalAlignment="Right" Margin="0,57,23,0" Name="btn_down" 
+                VerticalAlignment="Top" Width="28" Padding="1" 
+                Command="ComponentCommands.MoveDown" 
+                CommandParameter="{Binding SelectedItem,ElementName=stepList}">
+            <Path Fill="#FF404040" Data="F0 M 4,0 L 8,0 8,5 12,5 6,12 0,5 4,5 Z" />
+        </Button>
+        <Button Grid.Row="2" Height="28" HorizontalAlignment="Right" Margin="0,0,23,238" Name="btn_delete" 
+                VerticalAlignment="Bottom" Width="28" Padding="2" 
+                CommandParameter="{Binding SelectedItem, ElementName=stepList}" Command="ApplicationCommands.Delete">
+            <Image Stretch="None" Height="16" Width="16" Margin="1" Source="/Phenix;component/Images/Delete16.png" />
+        </Button>
+        <Label Content="添加执行类型" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="18,0,0,0" Name="label3" VerticalAlignment="Top" />
+        <Button Content="创建" Grid.Row="3" Height="30" HorizontalAlignment="Center" Margin="0" Name="create" VerticalAlignment="Center" Width="80" Click="create_Click" IsDefault="True" />
+        <Button Content="取消" Grid.Column="1" Grid.Row="3" Height="30" HorizontalAlignment="Center" Margin="0" Name="cancel" VerticalAlignment="Center" Width="80" IsCancel="True" Click="cancel_Click" />
+        
+        <xctk:PropertyGrid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Name="propertyGrid1" VerticalAlignment="Stretch" Height="Auto" Width="Auto" DataContext="{Binding}" Grid.RowSpan="2" />
+        <Label Content="任务无步骤。" Height="28" HorizontalAlignment="Left" Margin="18,2,0,0" Name="notask_lb" VerticalAlignment="Top" Grid.Row="2" />
+    </Grid>
+</Window>
