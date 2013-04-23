@@ -7,6 +7,8 @@ while line = s.gets
   puts line
   result<< line
 end
+
+s.sent "ehllo"
 =begin
 time
 AF_INET
@@ -14,12 +16,4 @@ AF_INET
 103.8.222.17
 103.8.222.17
 =end
-puts s.addr
-server=TCPServer.open(s.addr[1].to_i)
-server.setsockopt(:SOCKET, :REUSEADDR, true)
-loop{
-  puts s.addr[1].to_i
-  client = server.accept
-  client.puts(client.addr)
-  puts(client.peeraddr)
-  client.close}
+
