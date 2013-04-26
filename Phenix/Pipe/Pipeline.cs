@@ -128,7 +128,6 @@ namespace Phenix.Pipe
         }
         #endregion
 
-
         #region 发送命令
         /// <summary>
         /// msg  "IP:Port:Message"

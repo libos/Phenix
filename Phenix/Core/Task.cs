@@ -4,28 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 using ServiceStack.Text;
+using Phenix.Core.Runner;
+using System.Reflection;
+using System.ComponentModel;
+using System.Diagnostics; 
 namespace Phenix.Core
 {
-    public class Task 
+    public class Task : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
 
         //
         private string _name;
         private int _needNum;
+      
 
-        //each step should have 
-        
-        public static Task generateTasks()
-        {
-            string json = "{\"task_unique_no\":\"Hb88EOaFCnNflZ2vQb6Rpw==\",\"created_at\":\"\\/Date(1366375884348)\\/\",\"Name\":\"任务n我饿了歌曲\",\"priority\":0,\"NeedNum\":0,\"Count\":4,\"List\":[{\"StepNo\":0,\"Runner\":0,\"OS\":0,\"libs\":[],\"inputParams\":[],\"inputParamsFormat\":null,\"outputParamsFormat\":null,\"Need_OutputFile\":false},{\"StepNo\":1,\"Runner\":0,\"OS\":0,\"libs\":[],\"inputParams\":[{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}}],\"inputParamsFormat\":null,\"outputParamsFormat\":null,\"Need_OutputFile\":false},{\"StepNo\":2,\"Runner\":0,\"OS\":0,\"libs\":[],\"inputParams\":[{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}}],\"inputParamsFormat\":null,\"outputParamsFormat\":null,\"Need_OutputFile\":false},{\"StepNo\":3,\"Runner\":0,\"OS\":0,\"libs\":[],\"inputParams\":[{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}}],\"inputParamsFormat\":null,\"outputParamsFormat\":null,\"Need_OutputFile\":false}],\"Last\":{\"StepNo\":3,\"Runner\":0,\"OS\":0,\"libs\":[],\"inputParams\":[{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}},{\"type\":0,\"unit\":1,\"seperator\":\";\",\"aArray\":[],\"fileList\":{\"folderPath\":null,\"subDirectory\":false,\"filePattern\":null},\"aDatabase\":{\"type\":0,\"SQLite\":null,\"Redis\":null,\"MySQL\":null,\"databaseName\":null,\"tableName\":null,\"tableField\":[]}}],\"inputParamsFormat\":null,\"outputParamsFormat\":null,\"Need_OutputFile\":false},\"status\":0}";
-            return  JsonSerializer.DeserializeFromString<Task>(json);
-        }
         public Task()
         {
+            status = 0;
         }
         public string task_unique_no { set; get; }
         public DateTime created_at { set; get; }
-        
+
+        public string creator { get; set; }
         public string Name
         {
             get
@@ -41,6 +42,22 @@ namespace Phenix.Core
         {
             set;
             get;
+        }
+        int _curStep;
+        public int curStep
+        {
+            set
+            {
+                if (_curStep != value)
+                {
+                    _curStep = value;
+                    OnPropertyChanged();
+                }
+            }
+            get
+            {
+                return _curStep;
+            }
         }
         public int NeedNum
         {
@@ -80,12 +97,6 @@ namespace Phenix.Core
                 List.RemoveAt(index);
             }
         }
-      /*  public Step Item(int index)
-        {
-
-            return (Step)List[index];
-        }
-        */
         public Step this[int index]
         {
             get
@@ -115,16 +126,60 @@ namespace Phenix.Core
                 var json = JsonSerializer.SerializeToString(this);
                 return json;
         }
+        public int totalStep
+        {
+            get
+            {
+                int total = 0 ;
+                this.List.ForEach(iterat =>
+                {
+                    total += iterat.totalGroup;
+                });
+                return total;
+            }
+        }
+        int _status;
         public int status
         {
-            set;
-            get;
+            set
+            {
+                _status = value;
+                OnPropertyChanged();
+            }
+            get
+            {
+                return _status;
+            }
         }
         public void save()
         {
             QueueModule qm = new QueueModule();
             qm.push2selfTaskList(this.Task2Json());
+
         }
+        public void start()
+        {
+            IRunner runner;
+            string className = "Phenix.Core.Runner." + StepSupport.Runner[this.List[curStep].Runner];
+            runner = (IRunner)(Activator.CreateInstance(Type.GetType(className)));
+            runner.Run(this);
+        }
+
+        public void stop()
+        {
+
+        }
+
+        private void OnPropertyChanged()
+        {
+            var stackTrace = new StackTrace();
+            string propertyName = stackTrace.GetFrame(1).GetMethod().Name;
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         //public static Task ParseJson(string json)
         //{
         // //   List<Step> steps = JsonObject.Parse(json).ArrayObjects("");

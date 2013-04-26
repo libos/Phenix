@@ -15,7 +15,8 @@ namespace Phenix
         public static string listenObj = "127.0.0.1:" + listenPort.ToString();
         public static readonly string selfTaskList = "selfTasks";
         public static readonly string allTaskList = "allTasks";
-        
+
+        public static readonly string SPACE = " ";
         //public static readonly byte[] QueueList
         //priority
 

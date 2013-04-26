@@ -16,7 +16,9 @@ namespace Phenix.Core
             unit = 1;
             aArray = new List<string>();
             seperator = ";";
-            
+
+            Exceptions = new List<Exception>();
+
             aDatabase = new DataBase();
             aDatabase.tableField = new List<string>();
             aDatabase.type = 0;
@@ -30,7 +32,7 @@ namespace Phenix.Core
             var param = new Param();
             return param;
         }
-
+        public List<Exception> Exceptions;
 
         [Category("基本属性"), PropertyOrder(0)]
         [DisplayName("参数来源")]

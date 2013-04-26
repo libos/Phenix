@@ -11,7 +11,9 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Security.Cryptography;
-using System.IO; 
+using System.IO;
+using System.Threading;
+using System.Diagnostics; 
 namespace Phenix
 {
     internal static class Utils
@@ -87,7 +89,44 @@ namespace Phenix
             return Convert.ToInt16(item.ToString().Split('.')[1]);
         }
 
+        public static  List<string> getSupport()
+        { // { "CMD","Terminal","JAVA","Ruby","Python","Perl","Matlab"};
+            List<string> support = new List<string>();
+            support.Add("CMD");
 
+            string command = "java -version & python -V & ruby -v & perl -v & matlab -?";
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "CMD.exe";
+            startInfo.Arguments = "/C " + command;
+            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardInput = true;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+            process.StartInfo = startInfo;
+            process.Start();
+           
+            string result =  process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+            result += process.StandardError.ReadToEnd();
+
+            string[] lang = { "Java", "Python", "Ruby", "Perl", "Matlab" };
+            string[] keywords = { "java version ", "Python ", "ruby ", "This is perl,", "matlab [-? ^| -h ^| -help]" };
+            int idx = 0;
+            foreach (string item in keywords)
+            {
+                if (result.Contains(item))
+                {
+                    support.Add(lang[idx]);
+                }
+                idx++;
+            }
+
+            //string path = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.User);
+            //path += Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Machine);
+            return support;
+        }
 
         //默认密钥向量 
         private static byte[] Keys = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };

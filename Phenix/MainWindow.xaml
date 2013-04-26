@@ -116,7 +116,8 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="386" />
-                            <ColumnDefinition Width="364" />
+                            <ColumnDefinition Width="187" />
+                            <ColumnDefinition Width="177" />
                         </Grid.ColumnDefinitions>
                         <GroupBox Header="本机信息" Height="154" HorizontalAlignment="Stretch" Margin="0" Name="groupBox1" VerticalAlignment="Stretch" Width="Auto">
                             <Grid>
@@ -156,25 +157,50 @@
                                 <Label Content="0个" Grid.Column="1" Grid.Row="3" Height="Auto" HorizontalAlignment="Right" Margin="0" Name="done" VerticalAlignment="Center" HorizontalContentAlignment="Right" />
                             </Grid>
                         </GroupBox>
-                        <GridSplitter Width="8" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
-                        Grid.Row="0" Grid.Column="1" Grid.RowSpan="1"></GridSplitter>
-                        <ListBox Grid.Column="1" Height="132" HorizontalAlignment="Left" Margin="6,0,0,0" Name="listBox1" VerticalAlignment="Top" Width="284" />
-                        <DockPanel Grid.Row="1" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="dockPanel5" VerticalAlignment="Stretch" Width="Auto" Grid.ColumnSpan="2">
-                            <ListView Height="Auto" Name="tasksList" Width="Auto" ItemsSource="{Binding TasksList}"   >
+                        <GridSplitter Width="8" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="1"></GridSplitter>
+                        <DockPanel Grid.Row="1" Height="Auto" HorizontalAlignment="Stretch" Name="dockPanel5" VerticalAlignment="Stretch" Width="Auto"   Grid.RowSpan="2" Grid.ColumnSpan="3">
+                            <ListView Height="Auto" Name="tasksList" Width="Auto" ItemsSource="{Binding TasksList}" MouseRightButtonUp="tasksList_MouseRightButtonUp">
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Name="start_tasksList" Header="Start(_S)" Click="start_tasksList_Click" >
+                                            <MenuItem.Icon>
+                                                <Image Source="/Phenix;component/Images/Active.ico" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Stop(_P)" Name="stop_tasksList" Click="stop_tasksList_Click">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Phenix;component/Images/Error.ico" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Name="remove_tasksList" Header="Remove(_M)" Click="remove_tasksList_Click">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Phenix;component/Images/Inactive.ico" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Refresh(_R)" Name="refresh_tasksList" Click="refresh_tasksList_Click">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Phenix;component/Images/Error.ico" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Name="createTask" Header="Create(_T)" Click="NewTask_Click">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Phenix;component/Images/Inactive.ico" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
-                                        <GridViewColumn Width="20" DisplayMemberBinding="{Binding _na}"  >
-                                            <CheckBox x:Name="hi"/> 
-                                        </GridViewColumn>
-                                        <GridViewColumn Width="140" Header="任务名" DisplayMemberBinding="{Binding Name}"/>
-                                        <GridViewColumn Width="80" Header="优先级" DisplayMemberBinding="{Binding priority}"/>
+                                        <GridViewColumn Width="140" Header="任务列表" DisplayMemberBinding="{Binding Name}"/>
+                                        <GridViewColumn Width="80" Header="操作系统" DisplayMemberBinding="{Binding priority}"/>
                                         <GridViewColumn Width="80" Header="步骤个数" DisplayMemberBinding="{Binding Count}"/>
-                                        <GridViewColumn Width="80" Header="执行状态" DisplayMemberBinding="{Binding status}"/>
-                                        <GridViewColumn Width="180" Header="创建时间" DisplayMemberBinding="{Binding created_at}"/>
-                                        <GridViewColumn Width="180" Header="" DisplayMemberBinding="{Binding _ad}" >
+                                        <GridViewColumn Width="80" Header="当前步骤" DisplayMemberBinding="{Binding curStep}"/>
+                                        <GridViewColumn Width="100" Header="创建时间" DisplayMemberBinding="{Binding created_at}"/>
+                                        <GridViewColumn Width="100" Header="创建者" DisplayMemberBinding="{Binding creator}"/>
+                                        <GridViewColumn Width="130" Header="执行状态"  >
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ProgressBar Value="{Binding status}" Maximum="180"/>
+                                                    <ProgressBar Width="100" Height="20" Value="{Binding status}" Maximum="100"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
@@ -182,6 +208,27 @@
                                 </ListView.View> 
                             </ListView>
                         </DockPanel>
+                        <GroupBox Grid.Column="1" Header="任务类型" Height="Auto" HorizontalAlignment="Stretch" Margin="3,0,0,0" Name="groupBox3" VerticalAlignment="Stretch" Width="180">
+                            <Grid Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="83*" />
+                                    <ColumnDefinition Width="85*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="27*" />
+                                    <RowDefinition Height="76*" />
+                                    <RowDefinition Height="28*" />
+                                </Grid.RowDefinitions>
+                                <ListBox HorizontalAlignment="Stretch" Name="supportList" VerticalAlignment="Stretch" Width="Auto" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" />
+                                <Label Content="系统环境支持" Grid.RowSpan="1" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="label2" VerticalAlignment="Stretch" />
+                                <Label Grid.Column="1" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="label4" VerticalAlignment="Stretch" FlowDirection="RightToLeft" >
+                                    <Hyperlink Click="Hyperlink_Click">支持更多</Hyperlink>
+                                </Label>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Column="2" Header="用户信息" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox4" VerticalAlignment="Stretch" Width="Auto">
+                            <Grid></Grid>
+                        </GroupBox>
                     </Grid>
                 </TabItem>
                 <TabItem Header="设置" Name="SettingTab" />

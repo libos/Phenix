@@ -101,8 +101,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Core\DataMapping.cs" />
     <Compile Include="Core\Param.cs" />
+    <Compile Include="Core\ParamSupport.cs" />
+    <Compile Include="Core\Runner\CMD.cs" />
+    <Compile Include="Core\Runner\IRunner.cs" />
     <Compile Include="Core\Step.cs" />
     <Compile Include="Core\StepSupport.cs" />
+    <Compile Include="Core\TaskList.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

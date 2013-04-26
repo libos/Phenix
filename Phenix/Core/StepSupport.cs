@@ -6,9 +6,9 @@ using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace Phenix.Core
 {
-    internal static class StepSupport
+    public static class StepSupport
     {
-        public static string[] Language = { "CMD","JAVA","Ruby","Python","Perl","Matlab"};
+        public static string[] Runner = { "CMD","Terminal","JAVA","Ruby","Python","Perl","Matlab"};
         public static string[] SysOS = {"Windows","Linux","OSX","Android","无限制" };
         public static string[] DataType = { "Array","FileList","Database"};
         public static string[] DatabaseSupported = { "SQLite", "Redis", "MySQL" };
@@ -57,6 +57,13 @@ namespace Phenix.Core
             FileList = 0x01,
             database = 0x02
         }
+        public enum StepStatus
+        {
+            Undo = 0,
+            Doing = 1,
+            Done = 2,
+            Error = 3
+        }
     }
 
     public class usedLanguage : IItemsSource
@@ -64,9 +71,9 @@ namespace Phenix.Core
         public ItemCollection GetValues()
         {
             ItemCollection langs = new ItemCollection();
-            for (int i= 0; i < StepSupport.Language.Length; i++)
+            for (int i= 0; i < StepSupport.Runner.Length; i++)
             {
-                langs.Add(i,StepSupport.Language[i]);
+                langs.Add(i,StepSupport.Runner[i]);
             }
         
             return langs;

@@ -28,6 +28,7 @@ using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Net;
+using System.ComponentModel;
 #endregion
 
 namespace Phenix
@@ -35,8 +36,10 @@ namespace Phenix
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window 
+    public partial class MainWindow : Window
     {
+
+        #region Definition
 
         public static ManualResetEvent events = new ManualResetEvent(false);
         public static bool startListenButton = false;
@@ -51,16 +54,58 @@ namespace Phenix
         private static string paramStatus = "";
         private bool rollback = false;
 
-        ObservableCollection<Task> _TasksList = new ObservableCollection<Task>();
+        #endregion
 
-        #region 初始化
+        #region Initialize Lists
+        ObservableCollection<Task> _TasksList = new ObservableCollection<Task>();
+        List<string> supportL = new List<string>();
+        public delegate void listHandler(System.Windows.Controls.ListBox lb, string item);
+        List<string> lsupport {
+            get
+            {
+                return this.supportL;
+            }
+            set 
+            {
+                foreach (var item in value )
+                {
+                    object[] lc = new object[2];
+                    lc[0] = this.supportList;
+                    lc[1] = item;
+                    this.supportList.Dispatcher.BeginInvoke(new listHandler((lb,ie) => 
+                    {
+                        lb.Items.Add(ie);
+
+                    }), lc);
+                }
+                this.supportL = value;
+            }
+        }
+        #endregion
+
+        #region Initializing
         public MainWindow()
         {
-            _TasksList.Add(Task.generateTasks());
-            _TasksList.Add(Task.generateTasks());
-            InitializeComponent();
- 
+   
+            #region Task Import
+            TaskList.preLoadTasks();
+            List<Task> lt = TaskList.taskList;
+            if (lt.Count > 0)
+            {
+                foreach (var item in lt)
+                {
+                    _TasksList.Add((Task)item);
+                }
+            }
+          
+            #endregion
 
+            InitializeComponent();
+
+            #region Support Environment
+            Thread supportListThread = new Thread(new ThreadStart(supportListDetetct));
+            supportListThread.Start();
+            #endregion
 
             #region Events Bound
             pl.msgQueue += this.onRecieveCmd;
@@ -106,11 +151,25 @@ namespace Phenix
             Utils.MacAddress = Utils.GetMacAddress();
             this.Mac_lb.Content = Utils.MacAddress;
             #endregion
+
+            #region Filepile
             fp = new FilePipe(this);
-            this.Hide(); 
+            this.Hide();
+            #endregion
+        }
+        public void supportListDetetct()
+        {
+            while (true)
+            {
+                List<string> support = Utils.getSupport();
+                while (support != this.lsupport)
+                {
+                    this.lsupport = support;
+                }
+                Thread.Sleep(1200000);
+            }
 
         }
-
 
         public ObservableCollection<Task> TasksList
         {
@@ -368,21 +427,25 @@ namespace Phenix
         }
         #endregion
 
-    
+        #region OnClosing
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             //clean up notifyicon (would otherwise stay open until application finishes)
-            MyNotifyIcon.Dispose();
-
-            base.OnClosing(e);
+            //MyNotifyIcon.Dispose();
+            
+            e.Cancel = true;
+            this.Hide();
+            //base.OnClosing(e);
         }
 
         private void Quit_Click(object sender, RoutedEventArgs e)
         {
+            MyNotifyIcon.Dispose();
             App.Current.Shutdown();
         }
+        #endregion
 
-
+        #region Notification
         private void Taskbar_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             if (this.Visibility == Visibility.Visible)
@@ -434,6 +497,7 @@ namespace Phenix
             if (this.Visibility != Visibility.Visible)
                 this.Show();
         }
+        #endregion
 
         #region Stop Service
 
@@ -554,6 +618,7 @@ namespace Phenix
         }
         #endregion
 
+        #region Clicks
         private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -568,6 +633,7 @@ namespace Phenix
             {
 
                 nt.aTask.save();
+                _TasksList.Add(nt.aTask);
                 //string json = tmp.Task2Json();// Task.Task2Json(test);
                 
                 //Task clone = JsonSerializer.DeserializeFromString<Task>(json);//.FromJson<Task>();
@@ -580,8 +646,64 @@ namespace Phenix
 
         }
 
-  
+        private void remove_tasksList_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void start_tasksList_Click(object sender, RoutedEventArgs e)
+        {
+            if (tasksList.SelectedItems.Count >0)
+            {
+                Task tmp = (Task)tasksList.SelectedValue;
+                tmp.start();
+            }
+        }
+
+        private void stop_tasksList_Click(object sender, RoutedEventArgs e)
+        {
+            if (tasksList.SelectedItems.Count > 0)
+            {
+                Task tmp = (Task)tasksList.SelectedValue;
+                tmp.start();
+            }
+        }
+
+        private void tasksList_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (tasksList.SelectedItems.Count <= 0)
+            {
+                if (tasksList.ContextMenu.Items.Count >= 5)
+                {
+                    tasksList.ContextMenu.Items.Remove(start_tasksList);
+                    tasksList.ContextMenu.Items.Remove(stop_tasksList);
+                    tasksList.ContextMenu.Items.Remove(remove_tasksList);
+                } 
+            }
+            else
+            {
+                if (tasksList.ContextMenu.Items.Count < 5)
+                {
+                    tasksList.ContextMenu.Items.Insert(0, remove_tasksList);
+                    tasksList.ContextMenu.Items.Insert(0, stop_tasksList);
+                    tasksList.ContextMenu.Items.Insert(0, start_tasksList);
+                }
+            }
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://www.share58.com/support");
+        }
+
+ 
+
+        private void refresh_tasksList_Click(object sender, RoutedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(_TasksList);
+            view.Refresh();
+        }
+       #endregion
     }
 
 }

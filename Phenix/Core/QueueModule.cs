@@ -54,5 +54,10 @@ namespace Phenix.Core
             }
            
         }
+        public List<string> getAllTasksList()
+        {
+            return Redis.ExecLuaAsList("return redis.call('LRANGE', '" + Constants.allTaskList + "', 0, -1)");
+        }
+
     }
 }
