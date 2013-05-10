@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Phenix.About" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgACAAA=</HashCode>
+      <FileName>About.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.App" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Constants" Collapsed="true">
+    <Position X="14" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAEAAAAAADAAAABAABGAAAAggAAAAAAAAAQAEEBKFYE=</HashCode>
+      <FileName>Constants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.MainWindow" Collapsed="true">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABADAETLAAQSAIAgRygI0hIABFEwAALCAnAAQSMCABI=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.NewTask" Collapsed="true">
+    <Position X="7" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAEAAAAEIAACAEAAAYAAAAEAACBAUACBAAAAAAA=</HashCode>
+      <FileName>NewTask.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.RedisExt" Collapsed="true">
+    <Position X="7" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RedisExt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Utils" Collapsed="true">
+    <Position X="14" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAgIAAACACAIACAAAAAAIAAAAIAIAIAAAAAA=</HashCode>
+      <FileName>Utils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.DataMapping" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\DataMapping.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.Param">
+    <Position X="20" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAQAAAQAgAAAAAAAAAAAAAAABAIAAgAACAAAAAAA=</HashCode>
+      <FileName>Core\Param.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.DataBase" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAEAIAAAAAAAAgAAAAAAAAAAABAAABAAEAAAAAAAA=</HashCode>
+      <FileName>Core\Param.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.FileList" Collapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAEAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Core\Param.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.paramType" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Param.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Phenix.Core.ParamSupport">
+    <Position X="20" Y="9" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Phenix.Core.ParamSupport.EnumParams" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Core\ParamSupport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAgAAAAAAAECAAIAAIAAABAAAAA=</HashCode>
+      <FileName>Core\ParamSupport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.QueueModule" Collapsed="true">
+    <Position X="5.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BABAABAAAAAAAAAgAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Core\QueueModule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.Step" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARAAAIAAAAAAOAAoAAAAAAEgAAIEAIgIAJAQAIACAE=</HashCode>
+      <FileName>Core\Step.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Phenix.Core.StepSupport">
+    <Position X="21.75" Y="6" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Phenix.Core.StepSupport.EnumLanguage" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Core\StepSupport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Phenix.Core.StepSupport.EnumOS" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Core\StepSupport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Phenix.Core.StepSupport.EnumParams" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Core\StepSupport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Phenix.Core.StepSupport.StepStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Core\StepSupport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAIAAAAAAAAAAAAAAAAAAAQBAAAAA=</HashCode>
+      <FileName>Core\StepSupport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.usedLanguage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\StepSupport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Phenix.Core.supportedOS" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\StepSupport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Phenix.Core.supportedDatabase" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\StepSupport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Phenix.Core.Task" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEYAIAAAAASAAAggKAAABAQggCMwEAAAAAACBEAAAAI=</HashCode>
+      <FileName>Core\Task.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Phenix.Core.TaskList">
+    <Position X="18.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\TaskList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Core.Runner.CMD" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAACAAAAAAAAAAAI=</HashCode>
+      <FileName>Core\Runner\CMD.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.11" />
+  </Class>
+  <Class Name="Phenix.Pipe.FilePipe" Collapsed="true">
+    <Position X="10.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQQUAABEAABIQAAAAACAAAAAAAQAAAAAAAAwAAAAAA=</HashCode>
+      <FileName>Pipe\FilePipe.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Pipe.Pipeline" Collapsed="true">
+    <Position X="14" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAQAAAAAgAAABAAAAgIAAAAAAAAAACEAAEAAg=</HashCode>
+      <FileName>Pipe\Pipeline.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Properties.Resources" Collapsed="true">
+    <Position X="8.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAACAAAAAAABEACAAQAAABAgIAAAAgAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Properties.Settings" Collapsed="true">
+    <Position X="10.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.CRC32" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.Consts" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACCAABQAAAAIQQAAAABAAAAAAAACAgAAwCAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.FileBlockException" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.FileBlock" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gASEAAAAACAAAAAAAAgCAAEhAAAAAAAAAAEEAAEAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Phenix.Support.BlockFinishedEventArgs" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.CommandReceivedEventArgs" Collapsed="true">
+    <Position X="12.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.FileTransmissionErrorOccurEventArgs" Collapsed="true">
+    <Position X="12.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.FileBlockCollection" Collapsed="true">
+    <Position X="14" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAQEAAAAAAAAAACAwAAAWAAAAAAQIAIAAAAAEAEAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.FileTransmission" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gUgeCQQBAOAAAgAApAMABAEAILgAAQAK6AJAYADAAgo=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Phenix.Support.FileSender" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAgCAAAAAAACIAAAAAAAAABAAAAAAAQIAgAEA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.Support.FileReceiver" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAiAAAAAASAAEEAAAAIAAAAAQIAAAACAIAgQQQIAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Phenix.UI.FolderChooserEditor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAIAAAAAAAAAAIAA=</HashCode>
+      <FileName>UI\FolderChooserEditor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Phenix.UI.FileChooserEditor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAIAAAAAAAAAAIAA=</HashCode>
+      <FileName>UI\FolderChooserEditor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="Phenix.Core.Runner.IRunner">
+    <Position X="20" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAI=</HashCode>
+      <FileName>Core\Runner\IRunner.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Delegate Name="Phenix.Pipe.msgQueueEventHandler" Collapsed="true">
+    <Position X="5.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Pipe\Pipeline.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Pipe.UIEventHandler" Collapsed="true">
+    <Position X="7" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Pipe\Pipeline.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Support.BlockFinishedEventHandler" Collapsed="true">
+    <Position X="5.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Support.CommandReceivedEventHandler" Collapsed="true">
+    <Position X="7" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Support.FileTransmissionErrorOccurEventHandler" Collapsed="true">
+    <Position X="14" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Support.Delegate_SendBlocks" Collapsed="true">
+    <Position X="10.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Support.Delegate_Void_Bool" Collapsed="true">
+    <Position X="12.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Phenix.Support.Delegate_Int_Int" Collapsed="true">
+    <Position X="8.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Support\FileTransmission.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>

@@ -17,9 +17,11 @@ namespace Phenix.Pipe
         private  ManualResetEvent _event;
         private static msgQueueEventHandler OnMsgQueueEvent;
         private static UIEventHandler OnWaitingFor;
-        public Pipeline(ManualResetEvent en)
+        MainWindow _mw;
+        public Pipeline(ManualResetEvent en,MainWindow mw)
         {
             _event = en;
+            _mw = mw;
         }
         public event msgQueueEventHandler msgQueue
         {
@@ -47,7 +49,6 @@ namespace Phenix.Pipe
             {
             }
             OnWaitingFor("服务停止");
-
         }
 
         #region 启动端口监听
@@ -64,7 +65,7 @@ namespace Phenix.Pipe
             int port = Convert.ToInt16(tmp[1]);
             try
             {
-                         //1.监听端口
+                //1.监听端口
                 TcpListener server = new TcpListener(IPAddress.Parse(ip), port);
                 server.Start();
                 //Console.Write("{0:HH:mm:ss}->监听端口{1}...", DateTime.Now, port);
@@ -129,6 +130,7 @@ namespace Phenix.Pipe
         #endregion
 
         #region 发送命令
+        public delegate void changeUI(MainWindow wm);
         /// <summary>
         /// msg  "IP:Port:Message"
         /// </summary>
@@ -139,7 +141,10 @@ namespace Phenix.Pipe
             tmp = msg.ToString().Split(':');
             string ip = tmp[0];
             int  port = Convert.ToInt16(tmp[1]);
-            string message = tmp[2];
+            tmp[0] = "";
+            tmp[1] = "";
+            string message = String.Join(":",tmp);
+            message = message.Substring(2);
             try
             {
                 //1.发送数据
@@ -152,15 +157,54 @@ namespace Phenix.Pipe
                 //2.接收状态,长度<1024字节
                 byte[] bytes = new Byte[1024];
                 string data = string.Empty;
-                if (stream.DataAvailable)
-                {
-                    int length = stream.Read(bytes, 0, bytes.Length);
-                    if (length > 0)
-                    {
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
-                        Console.WriteLine("{0:HH:mm:ss}->接收状态：{1}", DateTime.Now, data);
-                    }
-                }
+
+                while (!stream.DataAvailable) ;
+                        int length = stream.Read(bytes, 0, bytes.Length);
+                        if (length > 0)
+                        {
+                            data = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
+                            Console.WriteLine("{0:HH:mm:ss}->接收状态：{1}", DateTime.Now, data);
+                            if (data == Constants.LoginSUC)
+                            {
+                                this._mw.Dispatcher.BeginInvoke(new changeUI(r =>
+                                {
+                                    r.grpBefore.Visibility = System.Windows.Visibility.Hidden;
+                                    r.lbEmail.Content = r.tbEmail.Text.Trim();
+                                    r.lbUserState.Content = "ONLINE";
+                                    r.grpAfter.Visibility = System.Windows.Visibility.Visible;
+                                    r.onlineUser = r.tbEmail.Text.Trim();
+                                }), this._mw);
+                            }
+                            else if (data.Contains(Constants.LoginFAIL))
+                            {
+                                this._mw.Dispatcher.BeginInvoke(new changeUI(r =>
+                                {
+                                    r.ShowMsg("用户名或密码错误");
+                                }), this._mw);
+                            }
+                            if (data.Contains(Constants.LogoutSUC))
+                            {
+                                this._mw.Dispatcher.BeginInvoke(new changeUI(r =>
+                                {
+                                    r.onlineUser = string.Empty;
+                                    r.tbEmail.Text = "";
+                                    r.pbPassword.Password = "";
+                                    r.grpBefore.Visibility = System.Windows.Visibility.Visible;
+                                    r.lbEmail.Content = "";
+                                    r.lbUserState.Content = "";
+                                    r.grpAfter.Visibility = System.Windows.Visibility.Hidden;
+                                }), this._mw);
+                            }
+                            else if (data.Contains(Constants.LogoutFAIL))
+                            {
+                                this._mw.Dispatcher.BeginInvoke(new changeUI(r =>
+                                {
+                                    r.ShowMsg("用户名或密码错误，无法注销");
+                                }), this._mw);
+                            }
+                        }
+              
+              
                 Console.Write("test1\n");
                 //3.关闭对象
                 stream.Close();

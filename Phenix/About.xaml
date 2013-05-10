@@ -16,7 +16,7 @@
                         <ColumnDefinition Width="99*" />
                         <ColumnDefinition Width="279*" />
                     </Grid.ColumnDefinitions>
-                    <Label Content="卸载服务" Height="28" HorizontalAlignment="Left" Margin="221,55,0,0" Name="label2" VerticalAlignment="Top" BorderThickness="1" BorderBrush="#FF7C7373" MouseDoubleClick="label2_MouseDoubleClick" Grid.Column="1" Grid.Row="3" />
+                    <Label Content="卸载服务" Height="28" HorizontalAlignment="Left" Margin="221,55,0,0" Name="label2" VerticalAlignment="Top" BorderThickness="1" BorderBrush="#FF7C7373" MouseDoubleClick="label2_MouseDoubleClick" Grid.Column="1" Grid.Row="3" ToolTip="双击卸载服务！" />
                     <Label Content="开发者：" Height="28" HorizontalAlignment="Left" Margin="41,6,0,0" Name="label3" VerticalAlignment="Top" Grid.Row="1" />
                     <TextBlock Margin="0,8,107,79" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
                          <Hyperlink NavigateUri="https://me.alipay.com/liber" IsEnabled="True" Click="Hyperlink_Click">

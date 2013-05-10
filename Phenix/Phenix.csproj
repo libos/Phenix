@@ -58,7 +58,9 @@
     <Reference Include="Accessibility">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.Build.Conversion.v3.5" />
     <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ServiceStack.Common">
       <HintPath>..\lib\ServiceStack.Common.dll</HintPath>
@@ -73,6 +75,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.85.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
@@ -99,11 +102,17 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="Core\Database\IDatabaseHelper.cs" />
+    <Compile Include="Core\Database\MySQLHelper.cs" />
+    <Compile Include="Core\Database\RedisHelper.cs" />
+    <Compile Include="Core\Database\SQLiteHelper.cs" />
     <Compile Include="Core\DataMapping.cs" />
+    <Compile Include="Core\Log.cs" />
     <Compile Include="Core\Param.cs" />
     <Compile Include="Core\ParamSupport.cs" />
     <Compile Include="Core\Runner\CMD.cs" />
     <Compile Include="Core\Runner\IRunner.cs" />
+    <Compile Include="Core\Runner\Ruby.cs" />
     <Compile Include="Core\Step.cs" />
     <Compile Include="Core\StepSupport.cs" />
     <Compile Include="Core\TaskList.cs" />

@@ -64,6 +64,12 @@ namespace Phenix.Core
             Done = 2,
             Error = 3
         }
+        public enum DatabaseEnum
+        {
+            SQLite  =   0,
+            Redis   =   1,
+            MySQL   =   2
+        }
     }
 
     public class usedLanguage : IItemsSource

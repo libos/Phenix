@@ -39,8 +39,9 @@ namespace Phenix
             startInfo.RedirectStandardOutput = true;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
-             process.StartInfo = startInfo;
-            _mw.statusBox.Items.Add(Constants.ServiceStopping);
+            process.StartInfo = startInfo;
+            ThreadPool.QueueUserWorkItem(new WaitCallback(_mw.EndServiceProcess), Constants.ServiceName);
+            _mw.statusBox.Items.Add(Constants.ServiceUninstalling);
  
             process.Start();
 
@@ -54,7 +55,7 @@ namespace Phenix
             object[] list = obj as object[];
             MainWindow mw = (MainWindow)list[0];
             Process p = (Process)list[1];
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             mw.Dispatcher.BeginInvoke(new StringDelegate(m =>
             {
                 m.statusBox.Items.Add(Constants.ServiceUninstalled);

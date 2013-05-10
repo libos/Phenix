@@ -157,6 +157,11 @@ namespace Phenix.Core
             qm.push2selfTaskList(this.Task2Json());
 
         }
+        public void update()
+        {
+            QueueModule qm = new QueueModule();
+            qm.updateTaskList(this.Task2Json(), this.task_unique_no);
+        }
         public void start()
         {
             IRunner runner;

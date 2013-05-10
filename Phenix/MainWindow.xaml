@@ -11,7 +11,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Closed="Window_Closed"  WindowStartupLocation="CenterScreen"
         WindowStyle="ThreeDBorderWindow"  ResizeMode="CanMinimize"
-        Initialized="Window_Initialized" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+        Initialized="Window_Initialized" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" Activated="Window_Activated" xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit">
     <Window.Resources> 
         <Style TargetType="TextBlock" x:Key="StatusBarTextBlock">
             <Setter Property="TextWrapping" Value="NoWrap" />
@@ -68,7 +68,7 @@
             
         </DockPanel>
         <DockPanel Height="Auto" HorizontalAlignment="Right" Name="dockPanel2" VerticalAlignment="Stretch" Width="200" Grid.ColumnSpan="2" Grid.Column="1">
-            <ListBox Name="statusBox" Width="200" IsTabStop="True" DockPanel.Dock="Right"  x:FieldModifier="public" SelectionMode="Single" OverridesDefaultStyle="False" ForceCursor="True" />
+            <ListBox Name="statusBox" Width="Auto" IsTabStop="True" DockPanel.Dock="Right"  x:FieldModifier="public" SelectionMode="Single" OverridesDefaultStyle="False" ForceCursor="True" Height="Auto" Margin="0" />
         </DockPanel>
         <DockPanel Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="dockPanel3" VerticalAlignment="Bottom" Width="Auto">
             <StatusBar Height="23" Name="statusBar1" Width="Auto" DockPanel.Dock="Bottom" >
@@ -200,7 +200,7 @@
                                         <GridViewColumn Width="130" Header="执行状态"  >
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ProgressBar Width="100" Height="20" Value="{Binding status}" Maximum="100"/>
+                                                    <ProgressBar Width="100" Height="20" Value="{Binding status}" Maximum="{Binding totalStep}"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
@@ -227,11 +227,142 @@
                             </Grid>
                         </GroupBox>
                         <GroupBox Grid.Column="2" Header="用户信息" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox4" VerticalAlignment="Stretch" Width="Auto">
-                            <Grid></Grid>
+                            <Grid>
+                                <GroupBox Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="grpBefore" VerticalAlignment="Stretch" Width="Auto">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="43" />
+                                            <RowDefinition Height="44" />
+                                            <RowDefinition Height="37*" />
+                                        </Grid.RowDefinitions>
+                                        <TextBox Height="23" HorizontalAlignment="Left" Margin="49,15,0,0" Name="tbEmail" VerticalAlignment="Top" Width="98" Grid.RowSpan="2" />
+                                        <Label Content="邮箱" Height="28" HorizontalAlignment="Left" Margin="6,15,0,0" Name="label28" VerticalAlignment="Top" Grid.RowSpan="2" />
+                                        <Label Content="密码" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="7,9,0,0" Name="label29" VerticalAlignment="Top" /> 
+                                        <PasswordBox Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="49,9,0,0" Name="pbPassword" VerticalAlignment="Top" Width="98" />
+                                        <Button Content="登陆" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="7,8,0,0" Name="btnLogin" VerticalAlignment="Top" Width="60" Click="btnLogin_Click" />
+                                        <Button Content="注册" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="87,8,0,0" Name="btnRegister" VerticalAlignment="Top" Width="60" Click="btnRegister_Click" />
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox  Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="grpAfter" VerticalAlignment="Stretch" Width="Auto" Visibility="Hidden">
+                                    <Grid>
+                                        <Label Content="邮箱" Height="28" HorizontalAlignment="Left" Margin="6,15,0,0" Name="label30" VerticalAlignment="Top" />
+                                        <Label Content="状态" Height="28" HorizontalAlignment="Left" Margin="6,52,0,0" Name="label31" VerticalAlignment="Top" />
+                                        <Label Height="28" HorizontalAlignment="Left" Margin="49,15,0,0" Name="lbEmail" VerticalAlignment="Top" />
+                                        <Label Height="28" HorizontalAlignment="Left" Margin="49,52,0,0" Name="lbUserState" VerticalAlignment="Top" />
+                                        <Button Content="注销" Height="23" HorizontalAlignment="Left" Margin="87,95,0,0" Name="btnLogout" VerticalAlignment="Top" Width="60" Click="btnLogout_Click" />
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
                         </GroupBox>
                     </Grid>
                 </TabItem>
-                <TabItem Header="设置" Name="SettingTab" />
+                <TabItem Header="设置" Name="SettingTab">
+                    <Grid Name="grid1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="140" />
+                            <RowDefinition Height="217" />
+                            <RowDefinition Height="203" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="510" />
+                            <ColumnDefinition Width="240" />
+                        </Grid.ColumnDefinitions>
+                        <GroupBox Grid.Column="1" Header="单元测试" Height="Auto" HorizontalAlignment="Stretch" Name="groupBox2" VerticalAlignment="Stretch" Width="Auto" Grid.RowSpan="3">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="129" />
+                                    <RowDefinition Height="267" />
+                                    <RowDefinition Height="141" />
+                                </Grid.RowDefinitions>
+                                <GroupBox Header="SQLite测试" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox5" VerticalAlignment="Stretch" Width="Auto">
+                                    <Grid>
+                                        <Button Content="SQLite Test" Height="23" HorizontalAlignment="Left" Margin="140,77,0,0" Name="btnSQLiteTest" VerticalAlignment="Top" Width="75" Click="SQLiteTest" />
+                                        <Label Content="SQLite文件" Height="28" HorizontalAlignment="Left" Margin="-2,14,0,0" Name="label16" VerticalAlignment="Top" />
+                                        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,16,35,0" Name="SQLitePath" VerticalAlignment="Top" Width="99" />
+                                        <Label Content="SQL" Height="28" HorizontalAlignment="Left" Margin="0,48,0,0" Name="label17" VerticalAlignment="Top" />
+                                        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,48,0,0" Name="SQLiteSQL" VerticalAlignment="Top" Width="176" />
+                                        <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,16,6,0" Name="button5" VerticalAlignment="Top" Width="23" />
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="MySQL测试" Height="267" HorizontalAlignment="Stretch" Margin="0" Name="groupBox6" VerticalAlignment="Stretch" Width="Auto" Grid.Row="1">
+                                    <Grid>
+                                        <TextBox Height="23" HorizontalAlignment="Left" Margin="83,20,0,0" Name="s_server" VerticalAlignment="Top" Width="120" Text="localhost" />
+                                        <TextBox Height="23" HorizontalAlignment="Left" Margin="81,83,0,0" Name="s_username" VerticalAlignment="Top" Width="122" Text="root" />
+                                        <Label Content="Server" Height="28" HorizontalAlignment="Left" Margin="6,15,0,0" Name="label6" VerticalAlignment="Top" />
+                                        <Label Content="Username" Height="28" HorizontalAlignment="Left" Margin="6,83,0,0" Name="label8" VerticalAlignment="Top" />
+                                        <Label Content="Password" Height="28" HorizontalAlignment="Left" Margin="6,112,0,0" Name="label9" VerticalAlignment="Top" />
+                                        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,142,13,0" Name="s_database" VerticalAlignment="Top" Width="122" Text="phenix" />
+                                        <Label Content="Database" Height="28" HorizontalAlignment="Left" Margin="6,142,0,0" Name="label12" VerticalAlignment="Top" />
+                                        <TextBox Height="23" HorizontalAlignment="Left" Margin="44,176,0,0" Name="s_sql" VerticalAlignment="Top" Width="158" />
+                                        <Label Content="SQL" Height="28" HorizontalAlignment="Left" Margin="6,174,0,0" Name="label13" VerticalAlignment="Top" />
+                                        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,51,14,0" Name="s_port" Text="3306" VerticalAlignment="Top" Width="120" />
+                                        <Label Content="Port" Height="28" HorizontalAlignment="Left" Margin="6,49,0,0" Name="label19" VerticalAlignment="Top" />
+                                        <PasswordBox Height="23" HorizontalAlignment="Left" Margin="82,112,0,0" Name="s_password" VerticalAlignment="Top" Width="120" Password="98398110" />
+                                        <Button Content="MySQL Test" Height="23" HorizontalAlignment="Left" Margin="127,216,0,0" Name="btnMySQLTest" VerticalAlignment="Top" Width="75" Click="MysqlTest" />
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="Redis测试" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox7" VerticalAlignment="Stretch" Width="Auto" Grid.Row="2">
+                                    <Grid>
+                                        <TextBox Height="23" HorizontalAlignment="Left" Margin="88,6,0,0" Name="s_redisPort" Text="6380" VerticalAlignment="Top" Width="120" />
+                                        <Label Content="RedisPort" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label18" VerticalAlignment="Top" />
+                                        <Label Content="Command" Height="28" HorizontalAlignment="Left" Margin="6,0,0,50" Name="label7" VerticalAlignment="Bottom" />
+                                        <TextBox Height="23" HorizontalAlignment="Left" Margin="88,40,0,0" Name="s_redisCmd" VerticalAlignment="Top" Width="120" />
+                                        <Button Content="Redis Test" Height="24" HorizontalAlignment="Left" Margin="132,82,0,0" Name="btnRedisTest" VerticalAlignment="Top" Width="75" Click="RedisTest" />
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="测试结果" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox8" VerticalAlignment="Stretch" Width="Auto" Grid.Row="2">
+                            <Grid>
+                                <my:DataGrid Height="Auto" Name="resultData" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" >
+                                
+                                </my:DataGrid>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Redis设置" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox9" VerticalAlignment="Stretch" Width="Auto">
+                            <Grid>
+                                <Button Content="..." Height="23" HorizontalAlignment="Left" Margin="439,20,0,0" Name="btnBinDir" VerticalAlignment="Top" Width="21" Click="btnBinDir_Click" />
+                                <Label Content="Redis2.6 Bin目录" Height="28" HorizontalAlignment="Left" Margin="17,17,0,0" Name="label20" VerticalAlignment="Top" />
+                                <TextBox Height="23" Margin="127,19,0,0" Name="BinDirectory" VerticalAlignment="Top" HorizontalAlignment="Left" Width="305" />
+                                <Label Content="Redis2.6 配置文件" Height="28" HorizontalAlignment="Left" Margin="11,54,0,0" Name="label21" VerticalAlignment="Top" />
+                                <Button Content="..." Height="23" HorizontalAlignment="Left" Margin="438,57,0,0" Name="btnConfFile" VerticalAlignment="Top" Width="21" Click="btnConfFile_Click" />
+                                <TextBox Height="23" HorizontalAlignment="Left" Margin="127,58,0,0" Name="ConfDirectory" VerticalAlignment="Top" Width="305" />
+                                <Button Content="保存" Height="23" HorizontalAlignment="Left" Margin="384,86,0,0" Name="saveDeamon" VerticalAlignment="Top" Width="75" />
+                                <CheckBox Content="后台服务自动启动" Height="16" HorizontalAlignment="Left" Margin="127,93,0,0" Name="deamonAutoStart" VerticalAlignment="Top" IsChecked="True" />
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Header="任务队列参数" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="groupBox10" VerticalAlignment="Stretch" Width="Auto">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="137*" />
+                                    <ColumnDefinition Width="204*" />
+                                    <ColumnDefinition Width="157*" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Content="开机开始执行任务" Height="16" HorizontalAlignment="Left" Margin="14,21,0,0" Name="cbAutoRun" VerticalAlignment="Top" IsChecked="True" />
+                                <CheckBox Content="优先运行本机任务" Height="16" HorizontalAlignment="Left" Margin="14,55,0,0" VerticalAlignment="Top" IsChecked="True" Name="cbPriorityLocal" />
+                                <CheckBox Content="匿名执行任务" Height="16" HorizontalAlignment="Left" Margin="14,153,0,0" Name="cbAnonymous" VerticalAlignment="Top" />
+                                <CheckBox Content="自动登录" Height="16" HorizontalAlignment="Left" Margin="14,89,0,0" Name="cbAutoLogin" VerticalAlignment="Top" IsChecked="True" />
+                                <CheckBox Content="分块传输文件" Height="16" HorizontalAlignment="Left" Margin="14,123,0,0" Name="cbSplitSend" VerticalAlignment="Top" IsChecked="True" />
+                                <Label Content="任务缓冲个数" Grid.Column="1" Height="28" HorizontalAlignment="Left" Margin="5,24,0,0" Name="label22" VerticalAlignment="Top" />
+                                <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Right" Margin="0,28,31,0" Name="s_tasknum" VerticalAlignment="Top" Width="61" Text="10" HorizontalContentAlignment="Right" />
+                                <Label Content="文件缓冲区大小" Grid.Column="1" Height="28" HorizontalAlignment="Left" Margin="5,65,0,0" Name="label23" VerticalAlignment="Top" />
+                                <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="112,69,0,0" Name="s_bufferSize" VerticalAlignment="Top" Width="61" Text="100" HorizontalContentAlignment="Right" />
+                                <Label Content="M" Grid.Column="1" Height="28" HorizontalAlignment="Left" Margin="179,68,0,0" Name="label24" VerticalAlignment="Top" />
+                                <Label Content="缓冲区位置(默认根目录)" Grid.Column="1" Height="28" HorizontalAlignment="Left" Margin="5,99,0,0" Name="label25" VerticalAlignment="Top" />
+                                <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="5,133,0,0" Name="s_bufferDir" VerticalAlignment="Top" Width="168" />
+                                <Button Content="..." Grid.Column="1" Height="23" HorizontalAlignment="Right" Margin="0,132,7,0" Name="btn_bufferDir" VerticalAlignment="Top" Width="18" />
+                                <Separator Height="194" HorizontalAlignment="Left" Margin="134,0,0,0" Name="separator1" VerticalAlignment="Top" Width="1" />
+                                <Separator Grid.Column="1" Height="194" HorizontalAlignment="Left" Margin="202,0,0,0" Name="separator2" VerticalAlignment="Top" Width="2" />
+                                <Button Content="保存" Grid.Column="2" Height="23" HorizontalAlignment="Left" Margin="44,153,0,0" Name="save_task" VerticalAlignment="Top" Width="75" />
+                                <CheckBox Content="接收服务器分配任务" Grid.Column="2" Height="16" HorizontalAlignment="Left" Margin="14,21,0,0" Name="cbReceiveTask" VerticalAlignment="Top" IsChecked="True" />
+                                <CheckBox Grid.Column="2" Height="16" HorizontalAlignment="Left" Margin="14,0,0,123" Name="cbWaitCPU" VerticalAlignment="Bottom" IsChecked="True" Content="等待CPU空闲时执行" />
+                                <CheckBox Content="数据传输只使用服务器" Grid.Column="2" Height="20" HorizontalAlignment="Left" Margin="14,95,0,0" Name="cbOnlyServer" VerticalAlignment="Top" Width="161" />
+                                <Label Content="转发" Grid.Column="2" Height="28" HorizontalAlignment="Left" Margin="27,108,0,0" Name="label26" VerticalAlignment="Top" />
+                                <Label Content="任务" Grid.Column="2" Height="28" HorizontalAlignment="Left" Margin="26,65,0,0" Name="label27" VerticalAlignment="Top" />
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
             </TabControl>
         </DockPanel>
  

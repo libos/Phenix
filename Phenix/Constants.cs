@@ -15,10 +15,31 @@ namespace Phenix
         public static string listenObj = "127.0.0.1:" + listenPort.ToString();
         public static readonly string selfTaskList = "selfTasks";
         public static readonly string allTaskList = "allTasks";
+        //LoginHeader + Constants.UserNameHeader + email + Constants.PasswordHeader
+        public static readonly string ServerMainTCP = "210.51.4.178:9980:";
+        public static readonly string LoginHeader = "*ClientLogin*\n";
+        public static readonly string UserNameHeader = "*UserName*\n";
+        public static readonly string PasswordHeader = "*Password*\n";
+        public static readonly string LoginSUC = "*LoginSUC*";
+        public static readonly string LoginFAIL = "*LoginFAIL*";
+        public static readonly string LogoutHeader = "*ClientLogout*\n";
+        public static readonly string LogoutSUC = "*LogoutSUC*";
+        public static readonly string LogoutFAIL = "*LogoutFAIL*";
+
+        public static readonly string CreateTaskHeader = "*CreateTask*\n";
+        public static readonly string UpdateTaskHeader = "*UpdateTask*\n";
+        public static readonly string TaskJson = "*TaskJson*\n";
+        
+        public static readonly string CreateTaskSuc = "*CreateTaskSuc*";
+        public static readonly string UpdateTaskSuc = "*UpdateTaskSuc*";
+        public static readonly string CreateTaskFail = "*CreateTaskFail*";
+        public static readonly string UpdateTaskFail = "*UpdateTaskFail*";
 
         public static readonly string SPACE = " ";
         //public static readonly byte[] QueueList
         //priority
+
+
 
         public static readonly string[] statusFilter = { "*BEGIN", "*END" };
         public static readonly string StartListening = "开始监听";
@@ -34,6 +55,7 @@ namespace Phenix
         public static readonly string ServiceStopping = "正在停止后台服务";
         public static readonly string ServiceStopped = "后台服务停止";
         public static readonly string ServiceInstalled = "服务安装成功！";
+        public static readonly string ServiceUninstalling = "正在卸载后台服务";
         public static readonly string ServiceUninstalled = "服务卸载成功！";
         public static readonly string InstallServiceCommand = "%cd%\\InstallUtil.exe %cd%\\PhenixDeamon.exe" ;
         public static readonly string UninstallServiceCommand = "%cd%\\InstallUtil.exe %cd%\\PhenixDeamon.exe  -u";

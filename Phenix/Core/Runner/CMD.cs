@@ -19,7 +19,7 @@ namespace Phenix.Core.Runner
         {
             this.aTask = aTask;
             Step curStep =  aTask[aTask.curStep];
-            ParamSupport ps = new ParamSupport(curStep.inputParams);
+            ParamSupport ps = new ParamSupport(aTask.task_unique_no,curStep.inputParams);
             List<string[]> param = ps.getParams();
             List<int> seq = new List<int>();
             if (curStep.inputParamsFormat == null)
@@ -69,6 +69,7 @@ namespace Phenix.Core.Runner
         {
             this.aTask[this.aTask.curStep].finished += 1;
             this.aTask.status += 1;
+            TaskList.updataList(this.aTask);
         }
     }
 }

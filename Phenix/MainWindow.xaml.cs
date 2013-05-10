@@ -11,7 +11,7 @@ using ServiceStack.Text;
 using Phenix.Pipe;
 using Phenix.Core;
 using Phenix.Notify;
-
+using Phenix.Core.Database;
 #region Windows
 using System.Windows.Forms;
 using System.Windows.Controls;
@@ -29,6 +29,9 @@ using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Net;
 using System.ComponentModel;
+using System.Security.Cryptography;
+using System.Data;
+using MySql.Data.MySqlClient;
 #endregion
 
 namespace Phenix
@@ -40,12 +43,11 @@ namespace Phenix
     {
 
         #region Definition
-
+        
         public static ManualResetEvent events = new ManualResetEvent(false);
         public static bool startListenButton = false;
         RedisClient Redis = new RedisClient("localhost", 6380, Constants.Passwd);
-        ServiceController sc2 = new ServiceController(Constants.ServiceName);
-        Pipeline pl = new Pipeline(events);
+        Pipeline pl;
 
         FilePipe fp;
         private Thread tcplistener = null;
@@ -53,13 +55,14 @@ namespace Phenix
         private static string param = "";
         private static string paramStatus = "";
         private bool rollback = false;
-
+        public string onlineUser = string.Empty;
         #endregion
 
         #region Initialize Lists
-        ObservableCollection<Task> _TasksList = new ObservableCollection<Task>();
+        public ObservableCollection<Task> _TasksList = new ObservableCollection<Task>();
         List<string> supportL = new List<string>();
         public delegate void listHandler(System.Windows.Controls.ListBox lb, string item);
+        public delegate void checkServiceDelegate(MainWindow mw);
         List<string> lsupport {
             get
             {
@@ -84,12 +87,19 @@ namespace Phenix
         #endregion
 
         #region Initializing
+        private delegate void UpdateGridUIEvent(Task t);
+        private void UpdateGridUI(Task t)
+        {
+            _TasksList[_TasksList.IndexOf(t)] = TaskList.changedTask;
+            this.tasksList.Items.Refresh();
+        }  
         public MainWindow()
         {
    
             #region Task Import
             TaskList.preLoadTasks();
             List<Task> lt = TaskList.taskList;
+            
             if (lt.Count > 0)
             {
                 foreach (var item in lt)
@@ -97,12 +107,32 @@ namespace Phenix
                     _TasksList.Add((Task)item);
                 }
             }
-          
+            System.Windows.Threading.Dispatcher dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+            ThreadPool.QueueUserWorkItem(r =>
+                {
+                    while (true)
+                    {
+                        if (TaskList.changed)
+                        {
+                            foreach (var item in _TasksList)
+                            {
+                                if (item.task_unique_no == TaskList.changedTaskId)
+                                {
+                                    var d = (System.Windows.Threading.Dispatcher)r;
+                                    d.Invoke(new UpdateGridUIEvent(UpdateGridUI), item);
+                                    break;
+                                }
+                            }
+                            TaskList.changed = false;
+                        }
+                    }
+                }, dispatcher);
             #endregion
 
             InitializeComponent();
 
             #region Support Environment
+            pl = new Pipeline(events,this);
             Thread supportListThread = new Thread(new ThreadStart(supportListDetetct));
             supportListThread.Start();
             #endregion
@@ -140,6 +170,7 @@ namespace Phenix
                 this.listen_lb.Content = Constants.CannotListen;
                 this.statusBox.Items.Add(Constants.CannotListen);
             }
+ 
             SendMessage(Constants.listenObj + ":*BEGIN");
             checkListenerStatus();
             checkServiceStatus();
@@ -162,9 +193,17 @@ namespace Phenix
             while (true)
             {
                 List<string> support = Utils.getSupport();
+
                 while (support != this.lsupport)
                 {
                     this.lsupport = support;
+                    //foreach (string item in support)
+                    //{
+                    //    if (this.lsupport.IndexOf(item) == -1)
+                    //    {
+                    //        this.lsupport.Add(item);
+                    //    }
+                    //}
                 }
                 Thread.Sleep(1200000);
             }
@@ -195,6 +234,7 @@ namespace Phenix
         }
         public void checkServiceStatus()
         {
+            ServiceController sc2 = new ServiceController(Constants.ServiceName);
             try
             {
                 if (sc2.Status.Equals(System.ServiceProcess.ServiceControllerStatus.Running))
@@ -217,6 +257,7 @@ namespace Phenix
                 this.service_lb.Content = Constants.NoServiceError;
                 this.startService.Header = Constants.ServiceInstall;
             }
+            sc2.Close();
         }
         #endregion
 
@@ -256,9 +297,7 @@ namespace Phenix
 
                 }
             }    
-        }
-
-
+        } 
         private void OnChangeStatus(string sParam)
         {
             paramStatus = sParam;
@@ -314,7 +353,6 @@ namespace Phenix
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-           
             try
             {
                 //QueueModule rm = new QueueModule();
@@ -380,6 +418,41 @@ namespace Phenix
         #endregion
 
         #region Service
+
+        public void EndServiceProcess(object serviceName)
+        {
+            Process[] arrayProcess = Process.GetProcesses();
+            foreach (Process p in arrayProcess)
+            {
+                //System、Idle进程会拒绝访问其全路径
+                if (p.ProcessName != "System" && p.ProcessName != "Idle" && p.ProcessName != "audiodg")
+                {
+                    try
+                    {
+                        if (p.MainModule.ModuleName == ((string)serviceName + ".exe"))
+                        {
+                            p.Kill();
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                    finally
+                    {
+                        this.Dispatcher.BeginInvoke(new checkServiceDelegate(mm =>
+                        {
+                       
+                                    mm.startService.Header = Constants.ServiceStart;
+                                    mm.service_img.Source = Properties.Resources.Stop.ToImageSource();
+                                    mm.service_lb.Content = Constants.ServiceStopped;
+ 
+ 
+                        }), this);                       
+                    }
+                }
+            }
+        }
         private void NoServiceHandler()
         {
             Process process = new Process();
@@ -397,25 +470,26 @@ namespace Phenix
             ThreadPool.QueueUserWorkItem(new WaitCallback(pl.WaitingFor), "正在安装服务...");
             this.startService.Header = Constants.ServiceStart;
             this.statusBox.Items.Add(Constants.ServiceInstalled);
-            checkServiceStatus();
+            //checkServiceStatus();
         }
         private void startService_Click(object sender, RoutedEventArgs e)
         {
+            ServiceController sc2 = new ServiceController(Constants.ServiceName);
             try
             { 
-                if (!sc2.Status.Equals(ServiceControllerStatus.Running))
+                if (!sc2.Status.Equals(ServiceControllerStatus.Running))        //启动
                 {
                     sc2.Start();
                     ThreadPool.QueueUserWorkItem(new WaitCallback(pl.WaitingFor), "正在启动服务...");
                     sc2.WaitForStatus(ServiceControllerStatus.Running);
                     this.startService.Header = Constants.ServiceStop;
                 }
-                else
+                else            //停止
                 {
                     Thread th = new Thread(new ParameterizedThreadStart(StopServiceAndWaitForExit)); 
                     th.Start(sc2.ServiceName);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(pl.WaitingForService),th);
-
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(pl.WaitingForService), th);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(EndServiceProcess), sc2.ServiceName);
                     this.startService.Header = Constants.ServiceStart;
                 }
              }
@@ -423,7 +497,7 @@ namespace Phenix
             {
                 NoServiceHandler();   
             }
-
+            sc2.Close();
         }
         #endregion
 
@@ -467,8 +541,10 @@ namespace Phenix
                 this.tb_showHide.Header = "隐藏";
             else
                 this.tb_showHide.Header = "显示";
+            
             try
             {
+                ServiceController sc2 = new ServiceController(Constants.ServiceName);
                 if (sc2.Status.Equals(System.ServiceProcess.ServiceControllerStatus.Stopped))
                 {
                     this.tb_startService.Header = Constants.ServiceStart;
@@ -477,6 +553,7 @@ namespace Phenix
                 {
                     this.tb_startService.Header = Constants.ServiceStop;
                 }
+                sc2.Close();
             }
             catch (Exception ex)
             {
@@ -531,7 +608,8 @@ namespace Phenix
             {
                 SERVICE_STATUS_PROCESS ssp = new SERVICE_STATUS_PROCESS();
                 int ignored;
-
+                try
+                {
                 // Obtain information about the service, and specifically its hosting process,
                 // from the Service Control Manager.
                 if (!QueryServiceStatusEx(controller.ServiceHandle.DangerousGetHandle(), SC_STATUS_PROCESS_INFO, ref ssp, Marshal.SizeOf(ssp), out ignored))
@@ -552,8 +630,8 @@ namespace Phenix
                 // having *just* been terminated in Task Manager) and the process does not really
                 // exist. This is a race condition. The exception is the desirable result in this
                 // case.
-                using (Process process = Process.GetProcessById(ssp.dwProcessId))
-                {
+            
+                    Process process = Process.GetProcessById(ssp.dwProcessId);
                     // EDIT: There is no need for waiting in a separate thread, because MSDN says "The handles are valid until closed, even after the process or thread they represent has been terminated." ( http://msdn.microsoft.com/en-us/library/windows/desktop/ms684868%28v=vs.85%29.aspx ), so to keep things in the same thread, the process HANDLE should be opened from the process id before the service is stopped, and the Wait should be done after that.
 
                     // Response to EDIT: What you report is true, but the problem is that the handle isn't actually opened by Process.GetProcessById. It's only opened within the .WaitForExit method, which won't return until the wait is complete. Thus, if we try the wait on the current therad, we can't actually do anything until it's done, and if we defer the check until after the process has completed, it won't be possible to obtain a handle to it any more.
@@ -588,6 +666,10 @@ namespace Phenix
                         while (!threadData.HasExited)
                             Monitor.Wait(threadData.Sync);
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -621,19 +703,32 @@ namespace Phenix
         #region Clicks
         private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+   
         }
 
         private void NewTask_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this.onlineUser == string.Empty)
+            {
+                System.Windows.MessageBox.Show("请登录之后在创建任务谢谢", "请登录", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             NewTask nt = new NewTask();
             nt.Owner = this;
             if (nt.ShowDialog() == true)
             {
-
+                nt.aTask.creator = this.onlineUser;
                 nt.aTask.save();
                 _TasksList.Add(nt.aTask);
+
+                string email = tbEmail.Text.Trim();
+                string inputPass = pbPassword.Password.Trim();
+                string password = Utils.MD5(inputPass);
+                object send = Constants.ServerMainTCP + Constants.CreateTaskHeader
+                    + Constants.UserNameHeader + email + "\n"
+                    + Constants.TaskJson + nt.aTask.Task2Json() + "\n" 
+                    + "\n**\n";
+                ThreadPool.QueueUserWorkItem(new WaitCallback(pl.TCPClient), send);
                 //string json = tmp.Task2Json();// Task.Task2Json(test);
                 
                 //Task clone = JsonSerializer.DeserializeFromString<Task>(json);//.FromJson<Task>();
@@ -703,7 +798,115 @@ namespace Phenix
             ICollectionView view = CollectionViewSource.GetDefaultView(_TasksList);
             view.Refresh();
         }
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            checkServiceStatus();
+            checkListenerStatus();
+        }
        #endregion
+ 
+        #region Setting Tab
+        private void SQLiteTest(object sender, RoutedEventArgs e)
+        {
+            SQLiteHelper slp = new SQLiteHelper(@"TestApp\test.db");
+            string sql = @"SELECT ('*4\r\n' || '$' || LENGTH(redis_cmd) 
+                            || '\r\n'  || redis_cmd || '\r\n' || '$' || LENGTH(redis_key) 
+                            || '\r\n' || redis_key || '\r\n' ||  '$' || LENGTH(hkey) 
+                            || '\r\n' ||  hkey || '\r\n' || '$' || LENGTH(hval)
+                            || '\r\n'|| hval || '\r') FROM (  SELECT  'HSET' as redis_cmd,  'MapDB' AS redis_key,  x AS hkey,  y AS hval  FROM test) AS t;";
+            slp.execute(sql);
+        }
+
+
+        private void MysqlTest(object sender, RoutedEventArgs e)
+        {
+            MySQLHelper msh = new MySQLHelper(s_server.Text, s_port.Text, s_username.Text, s_password.Password, s_database.Text);
+            DataTable dt = new DataTable();
+            dt.Load((MySqlDataReader)msh.execute("select * from params"));
+            resultData.DataContext = dt;
+            // msh.getDataSet("select * from params");
+            //msh.saveProto("params","id","x","y","z");
+            //msh.execute(s_sql.Text);   
+        }
+
+        private void RedisTest(object sender, RoutedEventArgs e)
+        {
+            RedisHelper rh = new RedisHelper();
+            rh.mergeRDB("dump.rdb","set.rdb",1);
+        }
+        private string OpenFileDialog()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = "Document";  
+            dlg.DefaultExt = ".conf";  
+            dlg.Filter = "Configuration File (.conf)|*.conf|*.*|*.*"; 
+             
+            Nullable<bool> result = dlg.ShowDialog();
+            string filename = null; 
+            if (result == true)
+            {
+                // Open document 
+                 filename = dlg.FileName;
+            }
+            return filename;
+        }
+        private string OpenFolderDialog()
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+            string path = null;
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                path = dialog.SelectedPath;
+            }
+            return path;
+        }
+
+        private void btnBinDir_Click(object sender, RoutedEventArgs e)
+        {
+            this.BinDirectory.Text = OpenFolderDialog();
+        }
+     
+        private void btnConfFile_Click(object sender, RoutedEventArgs e)
+        {
+            this.ConfDirectory.Text = OpenFileDialog();
+        }
+        #endregion
+
+        #region UserInterface
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://www.share58.com");
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            string email = tbEmail.Text.Trim(); 
+            string inputPass= pbPassword.Password.Trim();
+            string password   = Utils.MD5(inputPass);
+            object send = Constants.ServerMainTCP + Constants.LoginHeader 
+                + Constants.UserNameHeader + email + "\n" 
+                + Constants.PasswordHeader + password 
+                + "\n**\n";
+            ThreadPool.QueueUserWorkItem(new WaitCallback(pl.TCPClient),send);
+        }
+        public void ShowMsg(string msg)
+        {
+            System.Windows.MessageBox.Show(msg);
+        }
+        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            string email = tbEmail.Text.Trim();
+            string inputPass = pbPassword.Password.Trim();
+            string password = Utils.MD5(inputPass);
+            object send = Constants.ServerMainTCP + Constants.LogoutHeader
+                + Constants.UserNameHeader + email + "\n"
+                + Constants.PasswordHeader + password
+                + "\n**\n";
+            ThreadPool.QueueUserWorkItem(new WaitCallback(pl.TCPClient), send);
+
+        }
+        #endregion
     }
 
 }

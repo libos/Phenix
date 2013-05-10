@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.IO;
+using Phenix.Core.Database;
 
 namespace Phenix.Core
 {
@@ -12,8 +14,10 @@ namespace Phenix.Core
         List<Param> paramProList;
         Param paramPro;
         int group;
-        public ParamSupport(List<Param> paramProList)
+        string taskID ;
+        public ParamSupport(string taskId,List<Param> paramProList)
         {
+            this.taskID = taskId;
             this.paramProList = paramProList;
         }
         public List<string[]> getParams()
@@ -44,11 +48,27 @@ namespace Phenix.Core
                     
                     break;
                 case (int)EnumParams.Database:
-
+                    switch (paramPro.aDatabase.type)
+                    {
+                        case (int)StepSupport.DatabaseEnum.SQLite:
+                            if (!File.Exists(paramPro.aDatabase.SQLite))
+                            {
+                                Log.Write("SQLite文件不存在！", this.taskID);
+                                break;
+                            }
+                            SQLiteHelper sh = new SQLiteHelper(paramPro.aDatabase.SQLite);
+                            
+                            break;
+                        case (int)StepSupport.DatabaseEnum.Redis:
+                            break;
+                        case (int)StepSupport.DatabaseEnum.MySQL:
+                            break;
+                    }
                     break;
             }
             return param;
         }
+
         public  string[] ArrayParam()
         {
             string[] param = new string[group];

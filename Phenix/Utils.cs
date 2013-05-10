@@ -92,6 +92,7 @@ namespace Phenix
         public static  List<string> getSupport()
         { // { "CMD","Terminal","JAVA","Ruby","Python","Perl","Matlab"};
             List<string> support = new List<string>();
+            support.Clear();
             support.Add("CMD");
 
             string command = "java -version & python -V & ruby -v & perl -v & matlab -?";
@@ -180,6 +181,19 @@ namespace Phenix
             {
                 return decryptString;
             }
+        }
+        public static string MD5(string strInput)
+        {
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(strInput);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("x2"));
+            }
+            return sb.ToString();
         }
         public static int UnixTime(DateTime dateTime)
         {

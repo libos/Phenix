@@ -15,5 +15,17 @@ namespace Phenix
         {
             return Encoding.UTF8.GetBytes(str);
         }
+        public static List<string> ToStringList(byte[][] multiDataList)
+        {
+            if (multiDataList == null)
+                return new List<string>();
+
+            var results = new List<string>();
+            foreach (var multiData in multiDataList)
+            {
+                results.Add(GetString(multiData));
+            }
+            return results;
+        }
     }
 }
