@@ -31,7 +31,6 @@ class User
 	@con.query "update users set #{attr}=#{value} where email = \"#{email}\""
     end 
     def online?(email)
-	binding.pry
 	rs = @con.query  "select * from users where email = \"#{email}\""
 	num =  rs.num_rows
         if num == 0
@@ -42,6 +41,18 @@ class User
 	   return true
 	end 
 	return false
+    end
+    def getOnlieUsers
+	rs = @con.query "select * from users where status = 1"
+	num = rs.num_rows
+	if num == 0 
+	   return nil
+	end
+	onlineUsers = []
+	rs.each_hash do |row|
+	   onlineUsers << row
+	end	
+	return onlineUsers
     end
     def close
 	@con.close
@@ -71,6 +82,18 @@ class Task
 		   return item
 		end
 	     end
+	     return nil
+	end
+	def getOneQueue(list_name)
+	     @redis.lrange(list_name,0,-1)
+	end
+	def taskDone(task)
+	    @redis.multi do
+		PriorityQueue.each do |q|
+		   @redis.lrem(q,0,task)
+		end
+		@redis.lpush(TaskDoneQueue,task)
+	    end
 	end
 end
 class Server
@@ -89,12 +112,23 @@ class Server
 	CreateTaskSuc = "*CreateTaskSuc*"
 	UpdateTaskSuc = "*UpdateTaskSuc*"
     def initialize
+	@clients = []
     	Thread.new do 
 		puts "Distribute Start"
+		task = Task.new
+		user = User.new
 		while true
-			
+		   if !task.checkQueue.nil?
+			users = user.getOnlineUsers
+		        binding.pry
+			task.getList.each_with_index do |t,index| 
+			   send2User(users[index],t)
+			end	
+ 		   end
 		end
 	end
+    end
+    def send2User(user,task)
     end
     def start
 	server = TCPServer.new 9980
@@ -146,7 +180,7 @@ class Server
 				taskhash = JSON.parse task	
 			end
 		end 
-		
+	
 	   end
 	end
      end
