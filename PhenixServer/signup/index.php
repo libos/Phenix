@@ -1,5 +1,7 @@
   <?php session_start(); ?>
 <html>
+<head>
+<meta charset="utf-8">
 <title>
   分布式消息队列系统用户注册
 </title>
@@ -54,7 +56,7 @@ a
   text-decoration:none;
 }
 </style>
-
+</head>
 <body>
   <?php 
   
@@ -130,7 +132,7 @@ a
   <div id="signup">
     <h2 class="title">用户注册</h2>
     <form action="index.php" method="post" accept-charset="utf-8" class="form">
-      <table class="table" width="400" border="0" align="center" cellpadding="5" cellspacing="1" >
+      <table class="table" width="450px" border="0" align="center" cellpadding="5" cellspacing="1" >
         <tr>
           <td align="right" valign="center">用户名</td>
           <td align="center"><input type="text" name="email" value="" id="email" size="50" class="required"></td>

@@ -2,14 +2,11 @@ require 'redis'
 require 'mysql'
 require 'digest/md5' 
 require 'pry'
+require 'json'
 =begin
-redis = Redis.new
-redis = Redis.new(:path=>"/tmp/redis.sock")
-redis.set("mykey","hello")
-puts redis.get("mykey")
 =end
 class User
-    def init
+    def initialize
 	begin
  	   @con = Mysql.new 'localhost','root','jknlff8-pro-17m7755','Phenix'	
         rescue Mysql::Error =>e
@@ -32,13 +29,52 @@ class User
     end
     def update(email,attr,value)
 	@con.query "update users set #{attr}=#{value} where email = \"#{email}\""
+    end 
+    def online?(email)
+	binding.pry
+	rs = @con.query  "select * from users where email = \"#{email}\""
+	num =  rs.num_rows
+        if num == 0
+           return false
+        end
+	row = rs.fetch_hash
+	if row['status'] == '1'
+	   return true
+	end 
+	return false
     end
     def close
 	@con.close
     end
 end
+class Task
+	PriorityQueue = ['TaskQueue0','TaskQueue1','TaskQueue2','TaskQueue3','TaskQueue4']
+	TaskDoneQueue = 'TaskDoneQueue'
+	def initialize
+	     @redis = Redis.new(:path=>"/tmp/redis.sock")
+	end
+	def queueTask(priority,task)
+	     @redis.lpush(PriorityQueue[priority],task)	
+	end
+	def getList
+	     taskList = []
+	     PriorityQueue.each do |item|
+	     	taskList.push(@redis.lrange(item,0,-1))
+	     end
+	     return taskList
+	end
+	def checkQueue
+	     taskList = []
+  	     PriorityQueue.each do |item|
+		tmp = @redis.lrange(item,0,-1)
+		if tmp.length > 0
+		   return item
+		end
+	     end
+	end
+end
 class Server
-	LoginHeader = '*ClientLogin*'
+    	LoginHeader = '*ClientLogin*'
 	UserNameHeader = '*UserName*'
 	PasswordHeader = '*Password*'
 	LoginSUC = '*LoginSUC*'
@@ -47,7 +83,20 @@ class Server
 	LogoutHeader = '*ClientLogout*'
         LogoutSUC = '*LogoutSUC*'
 	LogoutFAIL = '*LogoutFAIL*'
-     def start
+   	CreateTaskHeader = "*CreateTask*" 
+	UpdateTaskHeader = "*UpdateTask*"
+	TaskJson = "*TaskJson*"
+	CreateTaskSuc = "*CreateTaskSuc*"
+	UpdateTaskSuc = "*UpdateTaskSuc*"
+    def initialize
+    	Thread.new do 
+		puts "Distribute Start"
+		while true
+			
+		end
+	end
+    end
+    def start
 	server = TCPServer.new 9980
 	while true
 	   Thread.start(server.accept) do |client|
@@ -61,7 +110,6 @@ class Server
 			email = recv[2]
 			password = recv[4]
 		  	user = User.new
-			user.init
 			if user.verify(email,password)
 				puts LoginSUC
 			 	client.puts LoginSUC
@@ -77,7 +125,6 @@ class Server
 			email = recv[2]
 			password = recv[4]
  			user = User.new
-                        user.init
                         if user.verify(email,password)
 				puts LogoutSUC
 				client.puts LogoutSUC
@@ -89,6 +136,17 @@ class Server
 			user.close
 			client.close
 		end
+		if recv[0] == CreateTaskHeader and recv[1] == UserNameHeader and recv[3] == TaskJson
+			email = recv[2]
+		 	task = recv[4]
+			user = User.new
+			if user.online?(email)
+				redis = Task.new
+				redis.queueTask(0,task)
+				taskhash = JSON.parse task	
+			end
+		end 
+		
 	   end
 	end
      end
