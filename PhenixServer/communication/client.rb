@@ -1,7 +1,7 @@
 require 'socket'
 require 'timeout'
 include Socket::Constants
-@serverIP = '127.0.0.1'#'210.51.4.178'
+@serverIP = '210.51.4.178' #'127.0.0.1'#
 @MainPort = 9005
 @HolePort = 8908
 @selfHolePort = 9001

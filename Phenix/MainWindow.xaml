@@ -56,7 +56,7 @@
                 <MenuItem Header="任务操作(_T)">
                     <MenuItem Header="创建任务" Name="NewTask" Click="NewTask_Click"/>
                     <MenuItem Header="获取任务列表" Name="getMissionList" Click="getMissionList_Click" />
-                    <MenuItem Header="停止任务" />
+                    <MenuItem Header="停止任务" Name="Test_Task1" Click="Test_Task1_Click" />
                 </MenuItem>
                 <MenuItem Header="帮助(_H)">
                     <MenuItem Header="使用帮助" />
@@ -68,7 +68,7 @@
             
         </DockPanel>
         <DockPanel Height="Auto" HorizontalAlignment="Right" Name="dockPanel2" VerticalAlignment="Stretch" Width="200" Grid.ColumnSpan="2" Grid.Column="1">
-            <ListBox Name="statusBox" Width="Auto" IsTabStop="True" DockPanel.Dock="Right"  x:FieldModifier="public" SelectionMode="Single" OverridesDefaultStyle="False" ForceCursor="True" Height="Auto" Margin="0" />
+            <ListBox Name="statusBox" Width="Auto" IsTabStop="True" DockPanel.Dock="Right"  x:FieldModifier="public" SelectionMode="Single" OverridesDefaultStyle="False" ForceCursor="True" Height="Auto" Margin="0" AllowDrop="False" SelectionChanged="statusBox_SelectionChanged" />
         </DockPanel>
         <DockPanel Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="dockPanel3" VerticalAlignment="Bottom" Width="Auto">
             <StatusBar Height="23" Name="statusBar1" Width="Auto" DockPanel.Dock="Bottom" >

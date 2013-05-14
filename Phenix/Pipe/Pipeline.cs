@@ -204,8 +204,7 @@ namespace Phenix.Pipe
                             }
                         }
               
-              
-                Console.Write("test1\n");
+               
                 //3.关闭对象
                 stream.Close();
                 client.Close();

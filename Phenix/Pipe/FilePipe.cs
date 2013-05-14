@@ -15,7 +15,10 @@ namespace Phenix.Pipe
     {
         public string FullFileName;
         private MainWindow _mw;
-
+        public FilePipe()
+        {
+            
+        }
         public FilePipe(MainWindow mw)
         {
             _mw = mw;
@@ -23,30 +26,32 @@ namespace Phenix.Pipe
 
         public void BeginSendTo(object obj)
         {
-            string[] tmp;
-            tmp = obj.ToString().Split(':');
-            string ip = tmp[0];
-            int port = Convert.ToInt16(tmp[1]);
+            string filename = (string)obj;
             FileSender task = new FileSender();
             try
             {
-                Socket listensocket;
+
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse(Constants.ServerIP), Constants.PortServerFile);
+                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(ep);
+
+                /*Socket listensocket;
                 listensocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3477);
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse(Constants.ServerIP), Constants.PortServerFile);
                 listensocket.Bind(ep);
                 listensocket.Listen(20);
-           
-                    Socket newsocket = listensocket.Accept();
-                    //task = new FileTransmission(FileTransmission.TransmissionMode.Send);
+                 Socket newsocket = listensocket.Accept();
+                  */
+                 
                     task.FullFileName = FullFileName;
-                    task.Socket = newsocket;
+                    task.Socket = socket;
                     task.EnabledIOBuffer = true;
                     task.BlockFinished += new BlockFinishedEventHandler(task_s_BlockFinished);
                     task.CommandReceived += new CommandReceivedEventHandler(task_s_CommandReceived);
                     task.ConnectLost += new EventHandler(task_s_ConnectLost);
                     task.ErrorOccurred += new FileTransmissionErrorOccurEventHandler(task_s_ErrorOccurred);
+                    task.AllFinished += new EventHandler(task_AllFinished);
                     task.Start();
-                   
                
             }
             catch (ThreadAbortException)
@@ -56,7 +61,26 @@ namespace Phenix.Pipe
             }
         }
         #region Send Handler
+        void task_AllFinished(object sender, EventArgs e)
+        {
+            FileTransmission task = (FileTransmission)sender;
+            ThreadPool.QueueUserWorkItem(new WaitCallback(r =>
+                    {
+                        FileReceiver taskRecv = new FileReceiver();
+                        taskRecv.Socket = (Socket)r;
+                        taskRecv.EnabledIOBuffer = true;
+                        taskRecv.BlockFinished += new BlockFinishedEventHandler(task_r_BlockFinished);
+                        taskRecv.ConnectLost += new EventHandler(task_r_ConnectLost);
+                        taskRecv.AllFinished += new EventHandler(task_r_AllFinished);
+                        taskRecv.BlockHashed += new BlockFinishedEventHandler(task_r_BlockHashed);
+                        taskRecv.ErrorOccurred += new FileTransmissionErrorOccurEventHandler(task_r_ErrorOccurred);
 
+                        taskRecv.FilePath = @"protocol/rdb/";
+
+                        taskRecv.Start();
+                    }), task._Socket);
+           // task._Socket = null;
+        }
         void task_s_ErrorOccurred(object sender, FileTransmissionErrorOccurEventArgs e)
         {
             _mw.statusBox.Dispatcher.BeginInvoke(new Delegate_String(s => _mw.statusBox.Items.Add(s)), e.InnerException.ToString());
@@ -93,7 +117,7 @@ namespace Phenix.Pipe
             int port = Convert.ToInt16(tmp[1]);
             try
             {
-                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3477);
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Constants.PortServerFile);
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(ep);
                 FileReceiver task = new FileReceiver();

@@ -16,7 +16,12 @@ namespace Phenix
         public static readonly string selfTaskList = "selfTasks";
         public static readonly string allTaskList = "allTasks";
         //LoginHeader + Constants.UserNameHeader + email + Constants.PasswordHeader
-        public static readonly string ServerMainTCP = "210.51.4.178:9980:";
+        public static readonly string ServerIP = "210.51.4.178";
+        public static readonly int PortServerMain = 9980;
+        public static readonly int PortServerFile = 9981;
+        public static readonly int PortServerControl = 9982;
+
+        public static readonly string ServerMainTCP = ServerIP + ":" + PortServerMain + ":";
         public static readonly string LoginHeader = "*ClientLogin*\n";
         public static readonly string UserNameHeader = "*UserName*\n";
         public static readonly string PasswordHeader = "*Password*\n";

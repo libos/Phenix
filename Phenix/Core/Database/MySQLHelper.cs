@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 using System.IO;
 using System.Windows;
 using System.Data;
+using Phenix.Pipe;
 namespace Phenix.Core.Database
 {
     public class MySQLHelper : IDatabaseHelper
@@ -54,7 +55,7 @@ namespace Phenix.Core.Database
         /// <param name="ValueList"></param>
         public void saveProto(string tablename,string primaryKey,params string[] ValueList)
         {
-            FileStream fsFile = new FileStream(@"tmp.rdb", FileMode.Append);
+            FileStream fsFile = new FileStream(@"protocol\tmp.rdb", FileMode.Append);
             StreamWriter sw = new StreamWriter(fsFile);
             for (int i = 0; i < ValueList.Length; i++)
             {
@@ -83,14 +84,9 @@ namespace Phenix.Core.Database
         }
         public void sendProtoFile()
         {
-
-        }
-        public void readyReceive()
-        {
-        }
-        public void receiveRDBFile()
-        {
-
+            FilePipe fp = new FilePipe();
+            string protofile = @"protocol\tmp.rdb";
+            fp.BeginSendTo(protofile);
         }
         ~MySQLHelper()
         {

@@ -812,10 +812,10 @@ namespace Phenix.Support
         /// </summary>
         internal void InitializeReceiveBuf()
         {
-            try
-            {
+
                 ReceiveBuf = new byte[_Socket.ReceiveBufferSize];
-            }
+                   try
+            {     }
             catch (Exception ex)
             {
                 OnErrorOccurred(ex);
@@ -1140,8 +1140,8 @@ namespace Phenix.Support
         {
             bool ContinueReceive = true;
             int count = 0;
-            try
-            {
+          try
+            {  
                 count = _Socket.EndReceive(ar);
             }
             catch (SocketException)
@@ -1158,7 +1158,7 @@ namespace Phenix.Support
                 catch { return; }
             }
             try
-            {
+            {     
                 if (count == 0)
                     return;
                 switch (ReceiveBuf[0])
@@ -1169,7 +1169,7 @@ namespace Phenix.Support
                     default:
                         throw new FormatException("Bad Header!");
                 }
-            }
+       }
             catch (Exception ex)
             {
                 OnErrorOccurred(ex);
@@ -1192,8 +1192,8 @@ namespace Phenix.Support
             string[] Msg = str.Split(' ');
             if (Msg[0] == "Exit")
             {
-                OnAllFinished();
-                ContinueReceive = false;
+                //OnAllFinished();
+                //ContinueReceive = false;
                 Stop();
             }
             else if (Msg[0] == "GET")
@@ -1228,6 +1228,11 @@ namespace Phenix.Support
                 else
                     throw new FormatException("Bad Command " + Msg[1]);
             }
+            else if (Msg[0] == "Finished")
+            {
+                OnAllFinished();
+                ContinueReceive = false;
+            }
             else
                 throw new FormatException("Bad Command " + Msg[0]);
 
@@ -1258,10 +1263,10 @@ namespace Phenix.Support
         internal override IAsyncResult BeginReceive()
         {
             InitializeReceiveBuf();
-            try
-            {
+ 
                 return _Socket.BeginReceive(ReceiveBuf, 0, ReceiveBuf.Length, SocketFlags.None, null, null);
-            }
+                try
+            {       }
             catch (SocketException)
             {
                 OnConnectLost();
@@ -1337,10 +1342,10 @@ namespace Phenix.Support
         internal string ReceiveString()
         {
             int count = 0;
-            try
-            {
+    
                 count = _Socket.EndReceive(BeginReceive());
-            }
+            try
+            {        }
             catch (Exception ex)
             {
                 OnConnectLost();
@@ -1542,6 +1547,7 @@ namespace Phenix.Support
                         }
                     }
                 }
+                SendStringAsync("Finished");
                 SendStringAsync("Exit");
                 _Blocks.WriteAllBlock();
                 OnAllFinished();

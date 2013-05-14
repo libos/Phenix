@@ -46,7 +46,7 @@ namespace Phenix
         
         public static ManualResetEvent events = new ManualResetEvent(false);
         public static bool startListenButton = false;
-        RedisClient Redis = new RedisClient("localhost", 6380, Constants.Passwd);
+        //RedisClient Redis = new RedisClient("localhost", 6380, Constants.Passwd);
         Pipeline pl;
 
         FilePipe fp;
@@ -125,6 +125,7 @@ namespace Phenix
                             }
                             TaskList.changed = false;
                         }
+                        Thread.Sleep(30000);
                     }
                 }, dispatcher);
             #endregion
@@ -379,10 +380,6 @@ namespace Phenix
             System.Environment.Exit(0);
         }
 
-        private void getMissionList_Click(object sender, RoutedEventArgs e)
-        {
-            SendMessage("127.0.0.1:9999:" + "hello" + new Random().Next());
-        }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
@@ -405,8 +402,7 @@ namespace Phenix
 
         private void button3_Click(object sender, RoutedEventArgs e)
         {
-            //fp.FullFileName = textBox1.Text;
-            ThreadPool.QueueUserWorkItem(new WaitCallback(fp.BeginSendTo), "a:1");
+            
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
@@ -907,6 +903,25 @@ namespace Phenix
 
         }
         #endregion
+
+        private void Test_Task1_Click(object sender, RoutedEventArgs e)
+        {
+            fp.FullFileName = @"C:\Users\Liber\Desktop\Important.txt";// @"D:\1毕设\Phenix\Startup\tmp\在火车上.mp4";    //
+            ThreadPool.QueueUserWorkItem(new WaitCallback(fp.BeginSendTo));
+        }
+
+        private void getMissionList_Click(object sender, RoutedEventArgs e)
+        {
+            //SendMessage("127.0.0.1:9999:" + "hello" + new Random().Next());
+            fp.FullFileName =  @"D:\1毕设\Phenix\Startup\tmp\在火车上.mp4";    //
+            ThreadPool.QueueUserWorkItem(new WaitCallback(fp.BeginSendTo));
+        }
+
+        private void statusBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Console.Write(statusBox.SelectedValue + "\n");
+        }
+ 
     }
 
 }
