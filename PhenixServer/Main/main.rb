@@ -180,7 +180,9 @@ class Server
 				taskhash = JSON.parse task	
 			end
 		end 
-	
+		if recv[0] == RecieveProtocolHeader and recv[1] == UserNameHeader and recv[3] == FilePile
+		
+		end
 	   end
 	end
      end
