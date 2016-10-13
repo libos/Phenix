@@ -23,4 +23,4 @@ VS C# export:
 
 
 
-PS: This project is mirrored from Bitbucket
+PS: This project is mirrored from my BitBucket.
